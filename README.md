@@ -9,10 +9,9 @@ It is tested and working with
 2. The `ESP32` Arduino platform with a recent stable release [`ESP32 Core 1.0.4 or newer`] (https://github.com/espressif/arduino-esp32)
 
 ### Releases
-#### v1.0.1
+#### v1.0.0
 
 ### PURPOSE:
 
-Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi.
+Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi credentials.
 
-### LICENCE:	MIT
