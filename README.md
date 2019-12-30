@@ -1,5 +1,7 @@
 ## ESP_DoubleResetDetector
 
+[![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
+
 This library is based on, modified, bug-fixed and improved from [`DataCute`] (https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
  
 Using this library to detect a double reset, using RTC Memory for ESP8266 and EEPROM for ESP32.
