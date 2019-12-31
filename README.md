@@ -25,12 +25,11 @@ The easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleReset
 1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
 2. Add SPIFFS support, besides EEPROM, for ESP32
 
-
-### PURPOSE:
+#### PURPOSE:
 
 Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi credentials.
 
-### Usage
+#### Usage
 
 How to use
 
