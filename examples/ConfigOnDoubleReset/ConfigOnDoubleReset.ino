@@ -26,10 +26,12 @@
  *
  * How It Works
  * 1) ESP8266
- * Save data in RTC memory
+ * Save data in RTC memory, EPPROM or SPIFFS
  * 2) ESP32
- * Save data in EEPROM from address 256, size 512 bytes (both configurable)
- *
+ * Save data in 
+ * a) EEPROM from address 256, size 512 bytes (both configurable)
+ * b) SPIFFS, file name "/drd.dat"
+ * 
  * So when the device starts up it checks this region of ram for a flag to see if it has been recently reset. 
  * If so it launches a configuration portal, if not it sets the reset flag. After running for a while this flag is cleared so that 
  * it will only launch the configuration portal in response to closely spaced resets.
@@ -75,6 +77,20 @@ String Router_SSID;
 String Router_Pass;
 
 #include <ESP_WiFiManager.h>              //https://github.com/khoih-prog/ESP_WiFiManager
+
+// These defines must be put before #include <ESP_DoubleResetDetector.h>
+// to select where to store DoubleResetDetector's variable.
+// For ESP32, You must select one to be true (EEPROM or SPIFFS)
+// For ESP8266, You must select one to be true (RTC, EEPROM or SPIFFS)
+// Otherwise, library will use default EEPROM storage
+#define ESP_DRD_USE_EEPROM      false
+#define ESP_DRD_USE_SPIFFS      true    //false
+
+#ifdef ESP8266
+  #define ESP8266_DRD_USE_RTC     false   //true
+#endif
+
+#define DOUBLERESETDETECTOR_DEBUG       true  //false
 
 #include <ESP_DoubleResetDetector.h>      //https://github.com/khoih-prog/ESP_DoubleResetDetector
 
