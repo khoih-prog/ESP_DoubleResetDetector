@@ -2,7 +2,7 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
 
-This library is based on, modified, bug-fixed and improved from [`DataCute`] (https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
+This library is based on, modified, bug-fixed and improved from [`DataCute`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
  
 Using this library to detect a double reset, using
 
@@ -10,14 +10,23 @@ Using this library to detect a double reset, using
 2. EEPROM and SPIFFS for ESP32.
 
 It is tested and working with 
-1. The `ESP8266` Arduino platform with a recent stable release [`ESP8266 Core 2.6.2 or newer`] (https://github.com/esp8266/Arduino)
-2. The `ESP32` Arduino platform with a recent stable release [`ESP32 Core 1.0.4 or newer`] (https://github.com/espressif/arduino-esp32)
+1. [`ESP8266 Core 2.6.2 or newer`](https://github.com/esp8266/Arduino)
+2. [`ESP32 Core 1.0.4 or newer`](https://github.com/espressif/arduino-esp32)
 
 ### Quick Start
 
-#### Installing
+#### Use Arduino Library Manager
 
 The easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
+
+#### Manual Install
+
+The suggested way to install manually is to:
+
+1. Navigate to [ESP_DoubleResetDetector](https://github.com/khoih-prog/ESP_DoubleResetDetector) page.
+2. Download the latest release `ESP_DoubleResetDetector-master.zip`.
+3. Extract the zip file to `ESP_DoubleResetDetector-master` directory 
+4. Copy whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries`.
 
 ### Releases
 #### New in v1.0.1
@@ -95,6 +104,7 @@ void loop()
 2. Similar features for Arduino (UNO, Mega, etc...)
 
 ### Contributing
+
 If you want to contribute to this project:
 - Report bugs and errors
 - Ask for enhancements
@@ -102,4 +112,5 @@ If you want to contribute to this project:
 - Tell other people about this library
 
 ### Copyright
+
 Copyright 2019- Khoi Hoang
