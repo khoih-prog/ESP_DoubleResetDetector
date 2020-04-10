@@ -9,12 +9,13 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.0.0
+   Version: 1.0.2
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      15/12/2019 Initial coding
     1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
+    1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
  *****************************************************************************************************************************/
 
 #ifndef ESP_DoubleResetDetector_H

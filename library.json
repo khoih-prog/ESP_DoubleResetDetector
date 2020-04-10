@@ -1,0 +1,13 @@
+{
+    "name": "ESP_DoubleResetDetector",
+    "keywords": "rtc,eeprom,spiffs,reset,data,esp32,esp8266",
+    "description": "Library to detect a double reset, using RTC Memory, EEPROM or SPIFFS for ESP8266 and EEPROM and SPIFFS for ESP32",
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/khoih-prog/ESP_DoubleResetDetector"
+    },
+    "version": "1.0.2",
+    "frameworks": "arduino",
+    "platforms": "espressif"
+}

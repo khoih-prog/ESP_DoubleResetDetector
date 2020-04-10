@@ -1,71 +1,68 @@
 /****************************************************************************************************************************
- * ConfigOnDoubleReset.ino
- * For ESP8266 / ESP32 boards
- *
- * ESP_WiFiManager is a library for the ESP8266/ESP32 platform (https://github.com/esp8266/Arduino) to enable easy
- * configuration and reconfiguration of WiFi credentials using a Captive Portal. Inspired by:
- * http://www.esp8266.com/viewtopic.php?f=29&t=2520
- * https://github.com/chriscook8/esp-arduino-apboot
- * https://github.com/esp8266/Arduino/blob/master/libraries/DNSServer/examples/CaptivePortalAdvanced/
- *
- * Forked from Tzapu https://github.com/tzapu/WiFiManager
- * and from Ken Taylor https://github.com/kentaylor
- * 
- * Built by Khoi Hoang https://github.com/khoih-prog/ESP_WiFiManager
- * Licensed under MIT license
- * Version: 1.0.1
- *
- * Version Modified By   Date      Comments
- * ------- -----------  ---------- -----------
- *  1.0.0   K Hoang      07/10/2019 Initial coding
- *  1.0.1   K Hoang      13/12/2019 Fix bug. Add features. Add support for ESP32
+   ConfigOnDoubleReset.ino
+   For ESP8266 / ESP32 boards
+
+   ESP_DoubleResetDetector is a library for the ESP8266/Arduino platform
+   to enable trigger configure mode by resetting ESP32 / ESP8266 twice.
+
+   Forked from DataCute https://github.com/datacute/DoubleResetDetector
+
+   Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
+   Licensed under MIT license
+   Version: 1.0.2
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      15/12/2019 Initial coding
+    1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
+    1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.   
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
- * This example will open a configuration portal when the reset button is pressed twice. 
- * This method works well on Wemos boards which have a single reset button on board. It avoids using a pin for launching the configuration portal.
- *
- * How It Works
- * 1) ESP8266
- * Save data in RTC memory, EPPROM or SPIFFS
- * 2) ESP32
- * Save data in 
- * a) EEPROM from address 256, size 512 bytes (both configurable)
- * b) SPIFFS, file name "/drd.dat"
- * 
- * So when the device starts up it checks this region of ram for a flag to see if it has been recently reset. 
- * If so it launches a configuration portal, if not it sets the reset flag. After running for a while this flag is cleared so that 
- * it will only launch the configuration portal in response to closely spaced resets.
- *
- * Settings
- * There are two values to be set in the sketch.
- *
- * DRD_TIMEOUT - Number of seconds to wait for the second reset. Set to 10 in the example.
- * DRD_ADDRESS - The address in ESP8266 RTC RAM to store the flag. This memory must not be used for other purposes in the same sketch. Set to 0 in the example.
- * 
- * This example, originally relied on the Double Reset Detector library from https://github.com/datacute/DoubleResetDetector
- * To support ESP32, use ESP_DoubleResetDetector library from //https://github.com/khoih-prog/ESP_DoubleResetDetector
+   This example will open a configuration portal when the reset button is pressed twice.
+   This method works well on Wemos boards which have a single reset button on board. It avoids using a pin for launching the configuration portal.
+
+   How It Works
+   1) ESP8266
+   Save data in RTC memory, EPPROM or SPIFFS
+   2) ESP32
+   Save data in
+   a) EEPROM from address 256, size 512 bytes (both configurable)
+   b) SPIFFS, file name "/drd.dat"
+
+   So when the device starts up it checks this region of ram for a flag to see if it has been recently reset.
+   If so it launches a configuration portal, if not it sets the reset flag. After running for a while this flag is cleared so that
+   it will only launch the configuration portal in response to closely spaced resets.
+
+   Settings
+   There are two values to be set in the sketch.
+
+   DRD_TIMEOUT - Number of seconds to wait for the second reset. Set to 10 in the example.
+   DRD_ADDRESS - The address in ESP8266 RTC RAM to store the flag. This memory must not be used for other purposes in the same sketch. Set to 0 in the example.
+
+   This example, originally relied on the Double Reset Detector library from https://github.com/datacute/DoubleResetDetector
+   To support ESP32, use ESP_DoubleResetDetector library from //https://github.com/khoih-prog/ESP_DoubleResetDetector
  *****************************************************************************************************************************/
 
 //Ported to ESP32
 #ifdef ESP32
-  #include <esp_wifi.h>
-  #include <WiFi.h>
-  #include <WiFiClient.h>
+#include <esp_wifi.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
 
-  #define ESP_getChipId()   ((uint32_t)ESP.getEfuseMac())
+#define ESP_getChipId()   ((uint32_t)ESP.getEfuseMac())
 
-  #define LED_ON      HIGH
-  #define LED_OFF     LOW  
+#define LED_ON      HIGH
+#define LED_OFF     LOW
 #else
-  #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
-  //needed for library
-  #include <DNSServer.h>
-  #include <ESP8266WebServer.h>  
+#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+//needed for library
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
 
-  #define ESP_getChipId()   (ESP.getChipId())
+#define ESP_getChipId()   (ESP.getChipId())
 
-  #define LED_ON      LOW
-  #define LED_OFF     HIGH
+#define LED_ON      LOW
+#define LED_OFF     HIGH
 #endif
 
 // SSID and PW for Config Portal
@@ -87,14 +84,14 @@ String Router_Pass;
 #define ESP_DRD_USE_SPIFFS      true    //false
 
 #ifdef ESP8266
-  #define ESP8266_DRD_USE_RTC     false   //true
+#define ESP8266_DRD_USE_RTC     false   //true
 #endif
 
 #define DOUBLERESETDETECTOR_DEBUG       true  //false
 
 #include <ESP_DoubleResetDetector.h>      //https://github.com/khoih-prog/ESP_DoubleResetDetector
 
-// Number of seconds after reset during which a 
+// Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 10
 
@@ -118,23 +115,23 @@ void heartBeatPrint(void)
     Serial.print("H");        // H means connected to WiFi
   else
     Serial.print("F");        // F means not connected to WiFi
-  
-  if (num == 80) 
+
+  if (num == 80)
   {
     Serial.println();
     num = 1;
   }
-  else if (num++ % 10 == 0) 
+  else if (num++ % 10 == 0)
   {
     Serial.print(" ");
   }
-} 
+}
 
 void check_status()
 {
   static ulong checkstatus_timeout = 0;
 
-  #define HEARTBEAT_INTERVAL    10000L
+#define HEARTBEAT_INTERVAL    10000L
   // Print hearbeat every HEARTBEAT_INTERVAL (10) seconds.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
   {
@@ -143,7 +140,7 @@ void check_status()
   }
 }
 
-void setup() 
+void setup()
 {
   // put your setup code here, to run once:
   // initialize the LED digital pin as an output.
@@ -153,21 +150,21 @@ void setup()
 
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
- //Local intialization. Once its business is done, there is no need to keep it around
+  //Local intialization. Once its business is done, there is no need to keep it around
   ESP_WiFiManager ESP_wifiManager;
 
-  // We can't use WiFi.SSID() in ESP32 as it's only valid after connected. 
+  // We can't use WiFi.SSID() in ESP32 as it's only valid after connected.
   // SSID and Password stored in ESP32 wifi_ap_record_t and wifi_config_t are also cleared in reboot
   // Have to create a new function to store in EEPROM/SPIFFS for this purpose
   Router_SSID = ESP_wifiManager.WiFi_SSID();
   Router_Pass = ESP_wifiManager.WiFi_Pass();
-  
+
   //Remove this line if you do not want to see WiFi password printed
   Serial.println("Stored: SSID = " + Router_SSID + ", Pass = " + Router_Pass);
 
-  // SSID to uppercase 
+  // SSID to uppercase
   ssid.toUpperCase();
-  
+
   if (Router_SSID != "")
   {
     ESP_wifiManager.setConfigPortalTimeout(60); //If no access point name has been previously entered disable timeout.
@@ -178,14 +175,14 @@ void setup()
     Serial.println("No stored Credentials. No timeout");
     initialConfig = true;
   }
-    
-  if (drd->detectDoubleReset()) 
+
+  if (drd->detectDoubleReset())
   {
     Serial.println("Double Reset Detected");
     initialConfig = true;
   }
-  
-  if (initialConfig) 
+
+  if (initialConfig)
   {
     Serial.println("Starting configuration portal.");
     digitalWrite(PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
@@ -195,42 +192,42 @@ void setup()
     //switched off via webserver or device is restarted.
     //ESP_wifiManager.setConfigPortalTimeout(600);
 
-    //it starts an access point 
+    //it starts an access point
     //and goes into a blocking loop awaiting configuration
-    if (!ESP_wifiManager.startConfigPortal((const char *) ssid.c_str(), password)) 
+    if (!ESP_wifiManager.startConfigPortal((const char *) ssid.c_str(), password))
       Serial.println("Not connected to WiFi but continuing anyway.");
-    else 
-      Serial.println("WiFi connected...yeey :)");    
+    else
+      Serial.println("WiFi connected...yeey :)");
   }
 
   digitalWrite(PIN_LED, LED_OFF); // Turn led off as we are not in configuration mode.
-  
-  #define WIFI_CONNECT_TIMEOUT        30000L
-  #define WHILE_LOOP_DELAY            200L
-  #define WHILE_LOOP_STEPS            (WIFI_CONNECT_TIMEOUT / ( 3 * WHILE_LOOP_DELAY ))
-  
+
+#define WIFI_CONNECT_TIMEOUT        30000L
+#define WHILE_LOOP_DELAY            200L
+#define WHILE_LOOP_STEPS            (WIFI_CONNECT_TIMEOUT / ( 3 * WHILE_LOOP_DELAY ))
+
   unsigned long startedAt = millis();
-  
+
   while ( (WiFi.status() != WL_CONNECTED) && (millis() - startedAt < WIFI_CONNECT_TIMEOUT ) )
-  {   
+  {
     WiFi.mode(WIFI_STA);
     WiFi.persistent (true);
     // We start by connecting to a WiFi network
-  
+
     Serial.print("Connecting to ");
     Serial.println(Router_SSID);
-  
+
     WiFi.begin(Router_SSID.c_str(), Router_Pass.c_str());
 
     int i = 0;
-    while((!WiFi.status() || WiFi.status() >= WL_DISCONNECTED) && i++ < WHILE_LOOP_STEPS)
+    while ((!WiFi.status() || WiFi.status() >= WL_DISCONNECTED) && i++ < WHILE_LOOP_STEPS)
     {
       delay(WHILE_LOOP_DELAY);
-    }    
+    }
   }
 
   Serial.print("After waiting ");
-  Serial.print((millis()- startedAt) / 1000);
+  Serial.print((millis() - startedAt) / 1000);
   Serial.print(" secs more in setup(), connection result is ");
 
   if (WiFi.status() == WL_CONNECTED)
@@ -242,7 +239,7 @@ void setup()
     Serial.println(ESP_wifiManager.getStatus(WiFi.status()));
 }
 
-void loop() 
+void loop()
 {
   // Call the double reset detector loop method every so often,
   // so that it can recognise when the timeout expires.
@@ -252,5 +249,5 @@ void loop()
 
   // put your main code here, to run repeatedly
   check_status();
-  
+
 }

@@ -2,6 +2,12 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
 
+### Releases v1.0.2
+
+1. Fix bug by left-over cpp file.
+2. Fix bug in example.
+3. Enhance README.md
+
 This library is based on, modified, bug-fixed and improved from [`DataCute`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
  
 Using this library to detect a double reset, using
@@ -9,27 +15,35 @@ Using this library to detect a double reset, using
 1. RTC Memory, EEPROM or SPIFFS for ESP8266
 2. EEPROM and SPIFFS for ESP32.
 
-It is tested and working with 
-1. [`ESP8266 Core 2.6.2 or newer`](https://github.com/esp8266/Arduino)
-2. [`ESP32 Core 1.0.4 or newer`](https://github.com/espressif/arduino-esp32)
+## Prerequisite
+1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
+3. [`ESP8266 core 2.6.3 or later`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
 
 ### Quick Start
 
-#### Use Arduino Library Manager
+#### Installing use Arduino Library Manager
 
-The easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
+1. The easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
+2. More detailed instructions at [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
 
 #### Manual Install
-
-The suggested way to install manually is to:
 
 1. Navigate to [ESP_DoubleResetDetector](https://github.com/khoih-prog/ESP_DoubleResetDetector) page.
 2. Download the latest release `ESP_DoubleResetDetector-master.zip`.
 3. Extract the zip file to `ESP_DoubleResetDetector-master` directory 
-4. Copy whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries`.
+4. Copy whole 
+  - `ESP_DoubleResetDetector-master` folder to Arduino libraries directory such as `~/Arduino/libraries`.
 
 ### Releases
-#### New in v1.0.1
+
+#### Releases v1.0.2
+
+1. Fix bug by left-over cpp file.
+2. Fix bug in example.
+3. Enhance README.md
+
+#### Releases v1.0.1
 
 1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
 2. Add SPIFFS support, besides EEPROM, for ESP32
@@ -98,13 +112,21 @@ void loop()
   drd->loop();
 }
 ```
+
+Also see examples: 
+1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
+2. [minimal](examples/minimal)
+
 ### TO DO
 
 1. Search for bug and improvement.
 2. Similar features for Arduino (UNO, Mega, etc...)
 
-### Contributing
+### Contributions and thanks
 
+1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+
+### Contributing
 If you want to contribute to this project:
 - Report bugs and errors
 - Ask for enhancements
@@ -112,5 +134,4 @@ If you want to contribute to this project:
 - Tell other people about this library
 
 ### Copyright
-
 Copyright 2019- Khoi Hoang
