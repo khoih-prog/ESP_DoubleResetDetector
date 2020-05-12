@@ -9,13 +9,14 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      15/12/2019 Initial coding
     1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
     1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.   
+    1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
  *****************************************************************************************************************************/
 /****************************************************************************************************************************
    This example will open a configuration portal when the reset button is pressed twice.
@@ -23,11 +24,13 @@
 
    How It Works
    1) ESP8266
-   Save data in RTC memory, EPPROM or SPIFFS
+   Save data in RTC memory, EPPROM, LittleFS or SPIFFS
    2) ESP32
    Save data in
    a) EEPROM from address 256, size 512 bytes (both configurable)
-   b) SPIFFS, file name "/drd.dat"
+   b) SPIFFS
+   
+   For LittleFS or SPIFFS, file name is "/drd.dat"
 
    So when the device starts up it checks this region of ram for a flag to see if it has been recently reset.
    If so it launches a configuration portal, if not it sets the reset flag. After running for a while this flag is cleared so that
@@ -78,14 +81,17 @@ String Router_Pass;
 // These defines must be put before #include <ESP_DoubleResetDetector.h>
 // to select where to store DoubleResetDetector's variable.
 // For ESP32, You must select one to be true (EEPROM or SPIFFS)
-// For ESP8266, You must select one to be true (RTC, EEPROM or SPIFFS)
+// For ESP8266, You must select one to be true (RTC, EEPROM, LITTLEFS or SPIFFS)
 // Otherwise, library will use default EEPROM storage
-#define ESP_DRD_USE_EEPROM      false
-#define ESP_DRD_USE_SPIFFS      true    //false
+
 
 #ifdef ESP8266
 #define ESP8266_DRD_USE_RTC     false   //true
+#define ESP_DRD_USE_LITTLEFS    true    //false
 #endif
+
+#define ESP_DRD_USE_EEPROM      false
+#define ESP_DRD_USE_SPIFFS      true
 
 #define DOUBLERESETDETECTOR_DEBUG       true  //false
 
@@ -184,7 +190,9 @@ void setup()
 
   if (initialConfig)
   {
-    Serial.println("Starting configuration portal.");
+    Serial.println("Starting configuration portal @ 192.168.4.1");
+    Serial.println("Using SSID = " + ssid + " and password = " + String(password) );
+    
     digitalWrite(PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
 
     //sets timeout in seconds until configuration portal gets turned off.

@@ -9,13 +9,14 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      15/12/2019 Initial coding
     1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
     1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
+    1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
  *****************************************************************************************************************************/
 
 #ifndef ESP_DoubleResetDetector_H
@@ -28,6 +29,7 @@
 #endif
 
 //#define ESP_DRD_USE_EEPROM      false
+//#define ESP_DRD_USE_LITTLEFS    false
 //#define ESP_DRD_USE_SPIFFS      false
 //#define ESP8266_DRD_USE_RTC     false   //true
 
@@ -42,8 +44,8 @@
 #endif
 
 #ifdef ESP8266
-#if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS)
-#warning Neither RTC, EEPROM nor SPIFFS selected. Default to EEPROM
+#if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
+#warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
 #ifdef ESP_DRD_USE_EEPROM
 #undef ESP_DRD_USE_EEPROM
 #define ESP_DRD_USE_EEPROM      true
@@ -51,7 +53,7 @@
 #endif
 #endif
 
-//default to use EEPROM, otherwise, use SPIFFS
+//default to use EEPROM, otherwise, use LITTLEFS (higher priority), then SPIFFS
 #if ESP_DRD_USE_EEPROM
 #include <EEPROM.h>
 
@@ -64,11 +66,30 @@
 #ifndef EEPROM_START
 #define EEPROM_START    256
 #endif
-#elif ESP_DRD_USE_SPIFFS
+
+#elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+
 #include <FS.h>
+
 #ifdef ESP32
+
 #include "SPIFFS.h"
+// ESP32 core 1.0.4 still uses SPIFFS
+#define FileFS   SPIFFS
+
+#else
+// From ESP8266 core 2.7.1
+#include <LittleFS.h>
+
+#if ESP_DRD_USE_LITTLEFS
+#define FileFS    LittleFS
+#else
+#define FileFS   SPIFFS
 #endif
+
+#endif    // #if ESP_DRD_USE_EEPROM
+
+
 
 #define  DRD_FILENAME     "/drd.dat"
 
@@ -94,12 +115,18 @@ class DoubleResetDetector
 #endif
 
       EEPROM.begin(EEPROM_SIZE);
-#elif ESP_DRD_USE_SPIFFS
-      // SPIFFS code
-      if (!SPIFFS.begin())
+#elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+      // LittleFS / SPIFFS code
+      if (!FileFS.begin())
       {
 #if (DOUBLERESETDETECTOR_DEBUG)
-        Serial.println("SPIFFS failed!. Please use EEPROM.");
+
+#if ESP_DRD_USE_LITTLEFS
+        Serial.println("LittleFS failed!. Please use SPIFFS or EEPROM.");
+#else
+        Serial.println("SPIFFS failed!. Please use LittleFS or EEPROM.");
+#endif
+
 #endif
       }
 #else
@@ -176,12 +203,12 @@ class DoubleResetDetector
 #if (DOUBLERESETDETECTOR_DEBUG)
       Serial.println("EEPROM Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
 #endif
-#elif (ESP_DRD_USE_SPIFFS)
-      // SPIFFS code
-      if (SPIFFS.exists(DRD_FILENAME))
+#elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+      // LittleFS / SPIFFS code
+      if (FileFS.exists(DRD_FILENAME))
       {
         // if config file exists, load
-        File file = SPIFFS.open(DRD_FILENAME, "r");
+        File file = FileFS.open(DRD_FILENAME, "r");
 
         if (!file)
         {
@@ -194,7 +221,13 @@ class DoubleResetDetector
         doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG;
 
 #if (DOUBLERESETDETECTOR_DEBUG)
+
+#if ESP_DRD_USE_LITTLEFS
+        Serial.println("LittleFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+#else
         Serial.println("SPIFFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+#endif
+
 #endif
 
         file.close();
@@ -225,9 +258,9 @@ class DoubleResetDetector
       EEPROM.get(EEPROM_START, DOUBLERESETDETECTOR_FLAG);
       Serial.println("SetFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
 #endif
-#elif (ESP_DRD_USE_SPIFFS)
-      // SPIFFS code
-      File file = SPIFFS.open(DRD_FILENAME, "w");
+#elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+      // LittleFS / SPIFFS code
+      File file = FileFS.open(DRD_FILENAME, "w");
 #if (DOUBLERESETDETECTOR_DEBUG)
       Serial.println("Saving config file...");
 #endif
@@ -270,9 +303,9 @@ class DoubleResetDetector
       EEPROM.get(EEPROM_START, DOUBLERESETDETECTOR_FLAG);
       Serial.println("ClearFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
 #endif
-#elif (ESP_DRD_USE_SPIFFS)
-      // SPIFFS code
-      File file = SPIFFS.open(DRD_FILENAME, "w");
+#elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
+      // LittleFS / SPIFFS code
+      File file = FileFS.open(DRD_FILENAME, "w");
 #if (DOUBLERESETDETECTOR_DEBUG)
       Serial.println("Saving config file...");
 #endif
@@ -302,4 +335,4 @@ class DoubleResetDetector
 
     uint32_t doubleResetDetectorFlag;
 };
-#endif // DoubleResetDetector_H
+#endif // ESP_DoubleResetDetector_H

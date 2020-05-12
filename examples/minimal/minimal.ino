@@ -9,45 +9,80 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.3
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      15/12/2019 Initial coding
     1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
     1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
+    1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
  *****************************************************************************************************************************/
 
-#include <ESP_DoubleResetDetector.h>
+// These defines must be put before #include <ESP_DoubleResetDetector.h>
+// to select where to store DoubleResetDetector's variable.
+// For ESP32, You must select one to be true (EEPROM or SPIFFS)
+// For ESP8266, You must select one to be true (RTC, EEPROM, LITTLEFS or SPIFFS)
+// Otherwise, library will use default EEPROM storage
 
-// Number of seconds after reset during which a
+
+#ifdef ESP8266
+#define ESP8266_DRD_USE_RTC     false   //true
+#define ESP_DRD_USE_LITTLEFS    true    //false
+#endif
+
+#define ESP_DRD_USE_EEPROM      false
+#define ESP_DRD_USE_SPIFFS      true
+
+#define DOUBLERESETDETECTOR_DEBUG       true  //false
+
+#include <ESP_DoubleResetDetector.h>      //https://github.com/khoih-prog/ESP_DoubleResetDetector
+
+// Number of seconds after reset during which a 
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 10
 
 // RTC Memory Address for the DoubleResetDetector to use
 #define DRD_ADDRESS 0
 
-DoubleResetDetector drd(DRD_TIMEOUT, DRD_ADDRESS);
+DoubleResetDetector* drd;
 
+#ifdef ESP32
+
+// For ESP32
 #ifndef LED_BUILTIN
 #define LED_BUILTIN       2         // Pin D2 mapped to pin GPIO2/ADC12 of ESP32, control on-board LED
+#endif
+
+#define LED_OFF     LOW
+#define LED_ON      HIGH
+
+#else
+
+// For ESP8266
+#define LED_ON      LOW
+#define LED_OFF     HIGH
+
 #endif
 
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
-
+  
   Serial.begin(115200);
-  Serial.println();
-  Serial.println("DoubleResetDetector Example Program");
-  Serial.println("-----------------------------------");
+  Serial.println("\nStarting minimal example for ESP_DoubleResetDetector");
+  
+  drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
-  if (drd.detectDoubleReset()) {
+  if (drd->detectDoubleReset()) 
+  {
     Serial.println("Double Reset Detected");
-    digitalWrite(LED_BUILTIN, LOW);
-  } else {
+    digitalWrite(LED_BUILTIN, LED_ON);
+  } 
+  else 
+  {
     Serial.println("No Double Reset Detected");
-    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(LED_BUILTIN, LED_OFF);
   }
 }
 
@@ -57,5 +92,5 @@ void loop()
   // so that it can recognise when the timeout expires.
   // You can also call drd.stop() when you wish to no longer
   // consider the next reset as a double reset.
-  drd.loop();
+  drd->loop();
 }
