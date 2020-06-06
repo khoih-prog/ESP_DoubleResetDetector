@@ -23,6 +23,6 @@
       ]
     }, 
     "frameworks": "arduino",
-    "platforms": "espressif"
+    "platforms": "espressif",
     "examples": "examples/*/*/*.ino"
 }
