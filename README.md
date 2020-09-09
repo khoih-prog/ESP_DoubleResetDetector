@@ -6,6 +6,9 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP_DoubleResetDetector.svg)](http://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
 
+---
+---
+
 ### Releases v1.0.3
 
 1. Update to use the new LittleFS for ESP8266 core 2.7.1+
@@ -17,56 +20,55 @@
 2. Fix bug in example.
 3. Enhance README.md
 
-This library is based on, modified, bug-fixed and improved from [`DataCute`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
+---
+
+This library is based on, modified, bug-fixed and improved from [`Stephen Denne's DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32 and ESP8266 using EEPROM, LittleFS or SPIFFS besides RTC memory.
  
-Using this library to detect a double reset, using
+Using this library to detect a double reset, using:
 
 1. RTC Memory, EEPROM, LittleFS or SPIFFS for ESP8266
 2. EEPROM and SPIFFS for ESP32.
 
+---
+---
+
 ## Prerequisite
-1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
-3. [`ESP8266 core 2.7.1 or later`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager) to use LittleFS or SPIFFS. SPIFFS is deprecated from ESP8266 core 2.7.1. 
 
-### Quick Start
+1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
+3. [`ESP8266 core 2.7.3+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager) to use LittleFS or SPIFFS. SPIFFS is deprecated from ESP8266 core 2.7.1.
 
-#### Installing use Arduino Library Manager
+---
+---
 
-1. The easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
-2. More detailed instructions at [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
+## Installation
 
-#### Manual Install
+### Use Arduino Library Manager
+The best and easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
+You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector) for more detailed instructions.
+
+### Manual Install
+
+Another way to install is to:
 
 1. Navigate to [ESP_DoubleResetDetector](https://github.com/khoih-prog/ESP_DoubleResetDetector) page.
 2. Download the latest release `ESP_DoubleResetDetector-master.zip`.
 3. Extract the zip file to `ESP_DoubleResetDetector-master` directory 
-4. Copy whole 
-  - `ESP_DoubleResetDetector-master` folder to Arduino libraries directory such as `~/Arduino/libraries`.
+4. Copy whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
-### Releases
+### VS Code & PlatformIO:
+1. Install [VS Code](https://code.visualstudio.com/)
+2. Install [PlatformIO](https://platformio.org/platformio-ide)
+3. Install **ESP_DoubleResetDetector** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ESP_DoubleResetDetector in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
-### Releases v1.0.3
-
-1. Update to use the new LittleFS for ESP8266 core 2.7.1+
-2. Update [minimal example](examples/minimal)
-
-#### Releases v1.0.2
-
-1. Fix bug by left-over cpp file.
-2. Fix bug in example.
-3. Enhance README.md
-
-#### Releases v1.0.1
-
-1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
-2. Add SPIFFS support, besides EEPROM, for ESP32
+---
 
 #### PURPOSE:
 
-Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi credentials.
+**Detects a double reset so that an alternative start-up mode can be used**. One example use is to allow re-configuration of a device's wifi credentials.
 
-#### Usage
+#### HOWTO Usage
 
 How to use
 
@@ -147,19 +149,92 @@ void loop()
   drd->loop();
 }
 ```
+---
+---
 
-Also see examples: 
-1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
-2. [minimal](examples/minimal)
+### Examples: 
+
+ 1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
+ 2. [minimal](examples/minimal)
+
+### Examples from other libraries
+
+#### [ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
+
+ 3. [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
+ 4. [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
+ 5. [ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
+
+#### [ESPAsync_WiFiManager Library](https://github.com/khoih-prog/ESPAsync_WiFiManager)
+
+ 6. [Async_ConfigOnDoubleReset](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDoubleReset)
+ 7. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
+ 8. [Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
+ 9. [Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+
+---
+
+#### And many other libraries are depending on this DRD feature
+
+  All examples of these following libraries are using DRD feature of this [ESP_DoubleResetDetector Library](https://github.com/khoih-prog/ESP_DoubleResetDetector)
+  
+  1. [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), 
+  2. [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF), 
+  3. [Blynk_GSM_Manager](https://github.com/khoih-prog/Blynk_GSM_Manager), 
+  4. [Blynk_Async_WM](https://github.com/khoih-prog/Blynk_Async_WM),
+  5. [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF), 
+  6. [Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager), 
+
+  and many more.
+
+---
+
+### Releases
+
+### Releases v1.0.3
+
+1. Update to use the new LittleFS for ESP8266 core 2.7.1+
+2. Update [minimal example](examples/minimal)
+
+#### Releases v1.0.2
+
+1. Fix bug by left-over cpp file.
+2. Fix bug in example.
+3. Enhance README.md
+
+#### Releases v1.0.1
+
+1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
+2. Add SPIFFS support, besides EEPROM, for ESP32
+
+---
 
 ### TO DO
 
 1. Search for bug and improvement.
 2. Similar features for Arduino (UNO, Mega, etc...)
 
+---
+
+### Issues
+
+Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
+
+---
+
 ### Contributions and thanks
 
-1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+1. Thanks to [Stephen Denne](https://github.com/datacute) for the [`DoubleResetDetector library`](https://github.com/datacute/DoubleResetDetector) this library is based upon.
+2. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/datacute"><img src="https://github.com/datacute.png" width="100px;" alt="datacute"/><br /><sub><b>⭐️ Stephen Denne</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/zobix"><img src="https://github.com/zobix.png" width="100px;" alt="zobix"/><br /><sub><b>zobix</b></sub></a><br /></td>
+  </tr> 
+</table>
+
+---
 
 ### Contributing
 If you want to contribute to this project:
@@ -168,5 +243,14 @@ If you want to contribute to this project:
 - Create issues and pull requests
 - Tell other people about this library
 
+---
+
+### License
+
+- The library is licensed under [MIT](https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/master/LICENSE)
+
+---
+
 ### Copyright
+
 Copyright 2019- Khoi Hoang
