@@ -34,9 +34,9 @@ Using this library to detect a double reset, using:
 
 ## Prerequisite
 
-1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+1. [`Arduino IDE 1.8.13+`](https://www.arduino.cc/en/Main/Software)
 2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
-3. [`ESP8266 core 2.7.3+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager) to use LittleFS or SPIFFS. SPIFFS is deprecated from ESP8266 core 2.7.1.
+3. [`ESP8266 core 2.7.4+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager) to use LittleFS or SPIFFS. SPIFFS is deprecated from ESP8266 core 2.7.1.
 
 ---
 ---
@@ -57,6 +57,7 @@ Another way to install is to:
 4. Copy whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
+
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
 3. Install **ESP_DoubleResetDetector** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ESP_DoubleResetDetector in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
@@ -185,7 +186,7 @@ void loop()
   5. [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF), 
   6. [Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager), 
 
-  and many more.
+  and many more to come.
 
 ---
 
