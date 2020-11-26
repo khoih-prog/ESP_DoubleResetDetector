@@ -32,7 +32,7 @@ Using this library to detect a double reset, using:
 ---
 ---
 
-## Prerequisite
+## Prerequisites
 
 1. [`Arduino IDE 1.8.13+`](https://www.arduino.cc/en/Main/Software)
 2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
@@ -60,7 +60,7 @@ Another way to install is to:
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install **ESP_DoubleResetDetector** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for ESP_DoubleResetDetector in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**ESP_DoubleResetDetector** library](https://platformio.org/lib/show/6935/ESP_DoubleResetDetector) by using [Library Manager](https://platformio.org/lib/show/6935/ESP_DoubleResetDetector/installation). Search for **ESP_DoubleResetDetector** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
