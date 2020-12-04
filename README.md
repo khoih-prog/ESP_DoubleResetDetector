@@ -9,6 +9,10 @@
 ---
 ---
 
+### Releases v1.1.0
+
+1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
+
 ### Releases v1.0.3
 
 1. Update to use the new LittleFS for ESP8266 core 2.7.1+
@@ -20,41 +24,30 @@
 2. Fix bug in example.
 3. Enhance README.md
 
----
-
-This library is based on, modified, bug-fixed and improved from [`Stephen Denne's DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32 and ESP8266 using EEPROM, LittleFS or SPIFFS besides RTC memory.
+This library is based on, modified, bug-fixed and improved from [`DataCute`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
  
-Using this library to detect a double reset, using:
+Using this library to detect a double reset, using
 
 1. RTC Memory, EEPROM, LittleFS or SPIFFS for ESP8266
 2. EEPROM and SPIFFS for ESP32.
 
----
----
-
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.13+`](https://www.arduino.cc/en/Main/Software)
-2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
-3. [`ESP8266 core 2.7.4+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager) to use LittleFS or SPIFFS. SPIFFS is deprecated from ESP8266 core 2.7.1.
-
----
----
+1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 Core 1.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards
+3. [`ESP8266 Core 2.7.4+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. SPIFFS is deprecated from ESP8266 core 2.7.1+. 
 
 ## Installation
 
 ### Use Arduino Library Manager
-The best and easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version.
-You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector) for more detailed instructions.
+The best and easiest way is to use `Arduino Library Manager`. Search for `ESP_DoubleResetDetector`, then select / install the latest version. You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector) for more detailed instructions.
 
 ### Manual Install
-
-Another way to install is to:
 
 1. Navigate to [ESP_DoubleResetDetector](https://github.com/khoih-prog/ESP_DoubleResetDetector) page.
 2. Download the latest release `ESP_DoubleResetDetector-master.zip`.
 3. Extract the zip file to `ESP_DoubleResetDetector-master` directory 
-4. Copy whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+4. Copy the whole `ESP_DoubleResetDetector-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
 
@@ -66,49 +59,11 @@ Another way to install is to:
 ---
 ---
 
-### HOWTO Use analogRead() with ESP32 running WiFi and/or BlueTooth (BT/BLE)
-
-Please have a look at [**ESP_WiFiManager Issue 39: Not able to read analog port when using the autoconnect example**](https://github.com/khoih-prog/ESP_WiFiManager/issues/39) to have more detailed description and solution of the issue.
-
-#### 1.  ESP32 has 2 ADCs, named ADC1 and ADC2
-
-#### 2. ESP32 ADCs functions
-
-- ADC1 controls ADC function for pins **GPIO32-GPIO39**
-- ADC2 controls ADC function for pins **GPIO0, 2, 4, 12-15, 25-27**
-
-#### 3.. ESP32 WiFi uses ADC2 for WiFi functions
-
-Look in file [**adc_common.c**](https://github.com/espressif/esp-idf/blob/master/components/driver/adc_common.c#L61)
-
-> In ADC2, there're two locks used for different cases:
-> 1. lock shared with app and Wi-Fi:
->    ESP32:
->         When Wi-Fi using the ADC2, we assume it will never stop, so app checks the lock and returns immediately if failed.
->    ESP32S2:
->         The controller's control over the ADC is determined by the arbiter. There is no need to control by lock.
-> 
-> 2. lock shared between tasks:
->    when several tasks sharing the ADC2, we want to guarantee
->    all the requests will be handled.
->    Since conversions are short (about 31us), app returns the lock very soon,
->    we use a spinlock to stand there waiting to do conversions one by one.
-> 
-> adc2_spinlock should be acquired first, then adc2_wifi_lock or rtc_spinlock.
-
-
-- In order to use ADC2 for other functions, we have to **acquire complicated firmware locks and very difficult to do**
-- So, it's not advisable to use ADC2 with WiFi/BlueTooth (BT/BLE).
-- Use ADC1, and pins GPIO32-GPIO39
-- If somehow it's a must to use those pins serviced by ADC2 (**GPIO0, 2, 4, 12, 13, 14, 15, 25, 26 and 27**), use the **fix mentioned at the end** of [**ESP_WiFiManager Issue 39: Not able to read analog port when using the autoconnect example**](https://github.com/khoih-prog/ESP_WiFiManager/issues/39) to work with ESP32 WiFi/BlueTooth (BT/BLE).
-
-
----
----
-
 #### PURPOSE:
 
-**Detects a double reset so that an alternative start-up mode can be used**. One example use is to allow re-configuration of a device's wifi credentials.
+Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi credentials.
+
+---
 
 #### HOWTO Usage
 
@@ -191,48 +146,184 @@ void loop()
   drd->loop();
 }
 ```
+
 ---
 ---
 
-### Examples: 
+### Examples
 
- 1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
- 2. [minimal](examples/minimal)
+1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
+2. [minimal](examples/minimal)
 
 ### Examples from other libraries
 
-#### [ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
+#### 1.[ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
 
- 3. [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
- 4. [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
- 5. [ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
+1. [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
+2. [ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr)
+3. [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
+4. [ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
 
-#### [ESPAsync_WiFiManager Library](https://github.com/khoih-prog/ESPAsync_WiFiManager)
 
- 6. [Async_ConfigOnDoubleReset](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDoubleReset)
- 7. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
- 8. [Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
- 9. [Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+#### 2. [ESPAsync_WiFiManager Library](https://github.com/khoih-prog/ESPAsync_WiFiManager)
+
+1. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
+2. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
+3. [Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
+4. [Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+
+and there are many more.
+
+---
+---
+
+### Debug Termimal Output Samples
+
+1. This is terminal debug output when running [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials. The boards then connected to WiFi AP **HueNet1** using new Static IP successfully. WiFi AP **HueNet1** is then lost, and board **autoreconnects** itself to backup WiFi AP **HueNet2**.
+
+```cpp
+Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
+ESP_WiFiManager Version v1.3.0
+ESP_DoubleResetDetector Version v1.1.0
+FS File: /ConfigSW.json, size: 150B
+FS File: /CanadaFlag_1.png, size: 40.25KB
+FS File: /CanadaFlag_2.png, size: 8.12KB
+FS File: /CanadaFlag_3.jpg, size: 10.89KB
+FS File: /edit.htm.gz, size: 4.02KB
+FS File: /favicon.ico, size: 1.12KB
+FS File: /graphs.js.gz, size: 1.92KB
+FS File: /index.htm, size: 3.63KB
+FS File: /drd.dat, size: 4B
+FS File: /wifi_cred.dat, size: 192B
+
+[WM] RFC925 Hostname = ESP32-FSWebServerDRD
+[WM] setAPStaticIPConfig
+[WM] setSTAStaticIPConfig for USE_CONFIGURABLE_DNS
+[WM] Set CORS Header to :  Your Access-Control-Allow-Origin
+Stored: SSID = HueNet2, Pass = 12345678
+[WM] * Add SSID =  HueNet2 , PW =  12345678
+Got stored Credentials. Timeout 120s for Config Portal
+SPIFFS Flag read = 0xd0d04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
+[WM] LoadWiFiCfgFile 
+[WM] OK
+[WM] * Add SSID =  HueNet1 , PW =  12345678
+[WM] * Add SSID =  HueNet2 , PW =  12345678
+ConnectMultiWiFi in setup
+[WM] ConnectMultiWiFi with :
+[WM] * Flash-stored Router_SSID =  HueNet2 , Router_Pass =  12345678
+[WM] * Additional SSID =  HueNet1 , PW =  12345678
+[WM] * Additional SSID =  HueNet2 , PW =  12345678
+[WM] Connecting MultiWifi...
+[WM] WiFi connected after time:  1
+[WM] SSID: HueNet1 ,RSSI= -27
+[WM] Channel: 2 ,IP address: 192.168.2.232
+After waiting 3.16 secs more in setup(), connection result is connected. Local IP: 192.168.2.232
+HTTP server started @ 192.168.2.232
+Open http://esp32-fs-browser.local/edit to see the file browser
+[WM] freeing allocated params!
+Stop doubleResetDetecting
+Saving config file...
+Saving config file OK
+
+WiFi lost. Call connectMultiWiFi in loop
+[WM] ConnectMultiWiFi with :
+[WM] * Flash-stored Router_SSID =  HueNet2 , Router_Pass =  12345678
+[WM] * Additional SSID =  HueNet1 , PW =  12345678
+[WM] * Additional SSID =  HueNet2 , PW =  12345678
+[WM] Connecting MultiWifi...
+[WM] WiFi connected after time:  3
+[WM] SSID: HueNet2 ,RSSI= -59
+[WM] Channel: 4 ,IP address: 192.168.2.232
+HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
+```
 
 ---
 
-#### And many other libraries are depending on this DRD feature
+1. This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials.
 
-  All examples of these following libraries are using DRD feature of this [ESP_DoubleResetDetector Library](https://github.com/khoih-prog/ESP_DoubleResetDetector)
-  
-  1. [Blynk_WM](https://github.com/khoih-prog/Blynk_WM), 
-  2. [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF), 
-  3. [Blynk_GSM_Manager](https://github.com/khoih-prog/Blynk_GSM_Manager), 
-  4. [Blynk_Async_WM](https://github.com/khoih-prog/Blynk_Async_WM),
-  5. [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF), 
-  6. [Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager), 
 
-  and many more to come.
+```
+
+Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
+ESP_WiFiManager Version v1.3.0
+ESP_DoubleResetDetector Version v1.1.0
+[WM] RFC925 Hostname = ConfigOnDoubleReset
+[WM] Set CORS Header to :  Your Access-Control-Allow-Origin
+Stored: SSID = HueNet1, Pass = 12345678
+[WM] * Add SSID =  HueNet1 , PW =  87654321
+Got stored Credentials. Timeout 120s for Config Portal
+LittleFS Flag read = 0xd0d04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
+[WM] LoadWiFiCfgFile 
+[WM] OK
+[WM] * Add SSID =  HueNet1 , PW =  jenniqqs
+[WM] * Add SSID =  HueNet2 , PW =  jenniqqs
+ConnectMultiWiFi in setup
+[WM] ConnectMultiWiFi with :
+[WM] * Flash-stored Router_SSID =  HueNet1 , Router_Pass =  jenniqqs
+[WM] * Additional SSID =  HueNet1 , PW =  12345678
+[WM] * Additional SSID =  HueNet2 , PW =  87654321
+[WM] Connecting MultiWifi...
+[WM] WiFi connected after time:  1
+[WM] SSID: HueNet1 ,RSSI= -32
+[WM] Channel: 2 ,IP address: 192.168.2.101
+After waiting 4.43 secs more in setup(), connection result is connected. Local IP: 192.168.2.101
+[WM] freeing allocated params!
+HStop doubleResetDetecting
+Saving config file...
+Saving config file OK
+HHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:1
+load:0x3fff0018,len:4
+load:0x3fff001c,len:1216
+ho 0 tail 12 room 4
+load:0x40078000,len:9720
+ho 0 tail 12 room 4
+load:0x40080400,len:6352
+entry 0x400806b8
+
+Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
+ESP_WiFiManager Version v1.3.0
+ESP_DoubleResetDetector Version v1.1.0
+[WM] RFC925 Hostname = ConfigOnDoubleReset
+[WM] Set CORS Header to :  Your Access-Control-Allow-Origin
+Stored: SSID = HueNet1, Pass = jenniqqs
+[WM] * Add SSID =  HueNet1 , PW =  jenniqqs
+Got stored Credentials. Timeout 120s for Config Portal
+LittleFS Flag read = 0xd0d01234
+doubleResetDetected
+Saving config file...
+Saving config file OK
+Open Config Portal without Timeout: Double Reset Detected
+Starting configuration portal.
+[WM] WiFi.waitForConnectResult Done
+[WM] SET AP
+[WM] Configuring AP SSID = ESP_9ABF498
+[WM] AP PWD = your_password
+[WM] AP Channel = 3
+[WM] AP IP address = 192.168.4.1
+[WM] HTTP server started
+[WM] ESP_WiFiManager::startConfigPortal : Enter loop
+
+```
 
 ---
 ---
 
 ### Releases
+
+### Releases v1.1.0
+
+1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
 
 ### Releases v1.0.3
 
@@ -251,36 +342,51 @@ void loop()
 2. Add SPIFFS support, besides EEPROM, for ESP32
 
 ---
-
-### TO DO
-
-1. Search for bug and improvement.
-2. Similar features for Arduino (UNO, Mega, etc...)
-
----
 ---
 
-### Issues
+### Troubleshooting
+
+If you get compilation errors, more often than not, you may need to install a newer version of the `ESP32 / ESP8266` core for Arduino.
+
+Sometimes, the library will only work if you update the `ESP32 / ESP8266` core to the latest version because I am using some newly added function.
+
+---
+
+### Issues ###
 
 Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
 
 ---
+---
+
+### TO DO
+
+1. Search for bug and improvement.
+
+
+### DONE
+
+1. For ESP32 and ESP8266 (EEPROM, SPIFFS and LittleFS).
+2. Similar features for Arduino (UNO, Mega, SAM DUE, SAMD21/SAMD51, nRF52, STM32, Teensy, etc.). Look at [**DoubleResetDetector_Generic**](https://github.com/khoih-prog/DoubleResetDetector_Generic)
+
+
+---
+---
 
 ### Contributions and thanks
 
-1. Thanks to [Stephen Denne](https://github.com/datacute) for the [`DoubleResetDetector library`](https://github.com/datacute/DoubleResetDetector) this library is based upon.
-2. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/datacute"><img src="https://github.com/datacute.png" width="100px;" alt="datacute"/><br /><sub><b>⭐️ Stephen Denne</b></sub></a><br /></td>
-    <td align="center"><a href="https://github.com/zobix"><img src="https://github.com/zobix.png" width="100px;" alt="zobix"/><br /><sub><b>zobix</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/zobix"><img src="https://github.com/zobix.png" width="100px;" alt="zobix"/><br /><sub><b>Zobix</b></sub></a><br /></td>
   </tr> 
 </table>
 
 ---
 
 ### Contributing
+
 If you want to contribute to this project:
 - Report bugs and errors
 - Ask for enhancements
@@ -289,7 +395,7 @@ If you want to contribute to this project:
 
 ---
 
-### License
+### License and credits ###
 
 - The library is licensed under [MIT](https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/master/LICENSE)
 

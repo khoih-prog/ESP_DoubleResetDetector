@@ -9,7 +9,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.1.0
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -17,16 +17,21 @@
     1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
     1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
     1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
- *****************************************************************************************************************************/
+    1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
+*****************************************************************************************************************************/
+
+#pragma once
 
 #ifndef ESP_DoubleResetDetector_H
 #define ESP_DoubleResetDetector_H
 
 #if defined(ARDUINO) && (ARDUINO >= 100)
-#include <Arduino.h>
+  #include <Arduino.h>
 #else
-#include <WProgram.h>
+  #include <WProgram.h>
 #endif
+
+#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "v1.1.0"
 
 //#define ESP_DRD_USE_EEPROM      false
 //#define ESP_DRD_USE_LITTLEFS    false
@@ -34,38 +39,38 @@
 //#define ESP8266_DRD_USE_RTC     false   //true
 
 #ifdef ESP32
-#if (!ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS)
-#warning Neither EEPROM nor SPIFFS selected. Default to EEPROM
-#ifdef ESP_DRD_USE_EEPROM
-#undef ESP_DRD_USE_EEPROM
-#define ESP_DRD_USE_EEPROM      true
-#endif
-#endif
+  #if (!ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
+    #warning Neither EEPROM, SPIFFS nor LittleFS selected. Default to EEPROM
+    #ifdef ESP_DRD_USE_EEPROM
+      #undef ESP_DRD_USE_EEPROM
+      #define ESP_DRD_USE_EEPROM      true
+    #endif
+  #endif
 #endif
 
 #ifdef ESP8266
-#if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
-#warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
-#ifdef ESP_DRD_USE_EEPROM
-#undef ESP_DRD_USE_EEPROM
-#define ESP_DRD_USE_EEPROM      true
-#endif
-#endif
+  #if (!ESP8266_DRD_USE_RTC && !ESP_DRD_USE_EEPROM && !ESP_DRD_USE_SPIFFS && !ESP_DRD_USE_LITTLEFS)
+    #warning Neither RTC, EEPROM, LITTLEFS nor SPIFFS selected. Default to EEPROM
+    #ifdef ESP_DRD_USE_EEPROM
+      #undef ESP_DRD_USE_EEPROM
+      #define ESP_DRD_USE_EEPROM      true
+    #endif
+  #endif
 #endif
 
 //default to use EEPROM, otherwise, use LITTLEFS (higher priority), then SPIFFS
 #if ESP_DRD_USE_EEPROM
-#include <EEPROM.h>
+  #include <EEPROM.h>
 
-#define  FLAG_DATA_SIZE     4
+  #define  FLAG_DATA_SIZE     4
 
-#ifndef EEPROM_SIZE
-#define EEPROM_SIZE     512
-#endif
+  #ifndef EEPROM_SIZE
+    #define EEPROM_SIZE     512
+  #endif
 
-#ifndef EEPROM_START
-#define EEPROM_START    256
-#endif
+  #ifndef EEPROM_START
+    #define EEPROM_START    256
+  #endif
 
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
 
@@ -73,19 +78,26 @@
 
 #ifdef ESP32
 
-#include "SPIFFS.h"
-// ESP32 core 1.0.4 still uses SPIFFS
-#define FileFS   SPIFFS
+  #if ESP_DRD_USE_LITTLEFS
+    // The library will be depreciated after being merged to future major Arduino esp32 core release 2.x
+    // At that time, just remove this library inclusion
+    #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+    #define FileFS   LITTLEFS
+  #else
+    #include "SPIFFS.h"
+    // ESP32 core 1.0.4 still uses SPIFFS
+    #define FileFS   SPIFFS
+  #endif
 
 #else
-// From ESP8266 core 2.7.1
-#include <LittleFS.h>
+  // From ESP8266 core 2.7.1
+  #include <LittleFS.h>
 
-#if ESP_DRD_USE_LITTLEFS
-#define FileFS    LittleFS
-#else
-#define FileFS   SPIFFS
-#endif
+  #if ESP_DRD_USE_LITTLEFS
+    #define FileFS    LittleFS
+  #else
+    #define FileFS   SPIFFS
+  #endif
 
 #endif    // #if ESP_DRD_USE_EEPROM
 
