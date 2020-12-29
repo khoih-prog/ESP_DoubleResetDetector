@@ -9,6 +9,109 @@
 ---
 ---
 
+## Table of Contents
+
+* [Why do we need this ESP_DoubleResetDetector library](#why-do-we-need-this-esp_doubleresetdetector-library)
+  * [Features](#features)
+  * [Currently supported Boards](#currently-supported-boards)
+* [Changelog](#changelog)
+  * [Releases v1.1.1](#releases-v111)
+  * [Releases v1.1.0](#releases-v110)
+  * [Releases v1.0.3](#releases-v103)
+  * [Releases v1.0.2](#releases-v102)
+  * [Releases v1.0.1](#releases-v101)
+* [Prerequisites](#prerequisites)
+* [Installation](#installation)
+  * [Use Arduino Library Manager](#use-arduino-library-manager)
+  * [Manual Install](#manual-install)
+  * [VS Code & PlatformIO](#vs-code--platformio)
+* [HOWTO Usage](#howto-usage)
+* [How It Works](#how-it-works)
+* [Examples](#examples)
+  * [ 1. ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
+  * [ 2. ConfigOnDRD_ESP32_minimal](examples/ConfigOnDRD_ESP32_minimal)
+  * [ 3. ConfigOnDRD_ESP8266_minimal](examples/ConfigOnDRD_ESP8266_minimal)
+  * [ 4. minimal](examples/minimal)
+ * [Examples from other libraries](#examples-from-other-libraries)
+  * [ 1. ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
+    * [ 1. ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
+    * [ 2. ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr)
+    * [ 3. ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
+    * [ 4. ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
+    * [ 5. ConfigOnDRD_ESP32_minimal](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_ESP32_minimal)
+    * [ 6. ConfigOnDRD_ESP8266_minimal](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_ESP8266_minimal)
+    * [ 7. ConfigOnDRD_FS_MQTT_Ptr_Complex](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr_Complex)
+    * [ 8. ConfigOnDRD_FS_MQTT_Ptr_Medium](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr_Medium)
+  * [ 2. ESPAsync_WiFiManager Library](https://github.com/khoih-prog/ESPAsync_WiFiManager)
+    * [ 1. Async_ConfigOnDoubleReset](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDoubleReset)
+    * [ 2. Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
+    * [ 3. Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
+    * [ 4. Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+    * [ 5. Async_ConfigOnDRD_ESP32_minimal](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_ESP32_minimal)
+    * [ 6. Async_ConfigOnDRD_ESP8266_minimal](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_ESP8266_minimal)
+    * [ 7. Async_ConfigOnDRD_FS_MQTT_Ptr_Complex](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr_Complex)
+    * [ 8. Async_ConfigOnDRD_FS_MQTT_Ptr_Medium](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr_Medium)
+  * [Many other libraries are depending on this library's DRD feature](#many-other-libraries-are-depending-on-this-librarys-drd-feature)
+    * [ 1. Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
+    * [ 2. Blynk_Async_WM](https://github.com/khoih-prog/Blynk_Async_WM)
+    * [ 3. BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM)
+    * [ 4. BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF)
+    * [ 5. BlynkGSM_Manager](https://github.com/khoih-prog/BlynkEthernet_WM)
+    * [ 6. Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
+    * [ 7. Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager)
+    * [ 8. Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
+* [Example minimal](#example-minimal)
+* [Debug Terminal Output Samples](#debug-terminal-output-samples)
+  * [1. ESP32_FSWebServer_DRD on ESP32_DEV](#1-esp32_fswebserver_drd-on-esp32_dev)
+  * [2. ConfigOnDoubleReset on ESP32_DEV](#2-configondoublereset-on-esp32_dev)
+* [Libraries using ESP_DoubleResetDetector or DoubleResetDetector_Generic library](#libraries-using-esp_doubleresetdetector-or-doubleresetdetector_generic-library)
+* [Debug](#debug)
+* [Troubleshooting](#troubleshooting)
+* [Releases](#releases)
+* [Issues](#issues)
+* [TO DO](#to-do)
+* [DONE](#done)
+* [Contributions and Thanks](#contributions-and-thanks)
+* [Contributing](#contributing)
+* [License](#license)
+* [Copyright](#copyright)
+
+---
+---
+
+### Why do we need this [ESP_DoubleResetDetector library](https://github.com/khoih-prog/ESP_DoubleResetDetector)
+
+#### Features
+
+[**ESP_DoubleResetDetector**](https://github.com/khoih-prog/ESP_DoubleResetDetector) is a library for the **ESP8266 and ESP32** boards to detects a double reset, within configurable timeout (default 10s) seconds, so that an alternative start-up mode can be used. Example use cases are to allow re-configuration of a device's WiFi / MQTT / Blynk credentials.
+
+This library is based on, modified, bug-fixed and improved from [`Stephen Denne's DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) to add support to ESP8266 and ESP32 using EEPROM, SPIFFS and LittleFS besides original RTC.
+
+Currently, [`DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) only supports ESP8266 using RTC memory.
+ 
+This library can be used to detect a double reset within a predetermined time to force the program to enter a special operation such as Config Portal, Clear Default Data, etc., using :
+
+1. EEPROM, SPIFFS or LittleFS for ESP8266 and ESP32 boards.
+2. RTC memory for ESP8266 boards (unadvised).
+
+#### Currently supported Boards
+
+This [**ESP_DoubleResetDetector** library](https://github.com/khoih-prog/ESP_DoubleResetDetector) currently supports these following boards:
+
+ 1. **ESP32 boards using EEPROM, SPIFFS or LittleFS**.
+ 2. **ESP8266 boards RTC memory, EEPROM, SPIFFS or LittleFS**
+ 
+---
+---
+
+## Changelog
+
+### Releases v1.1.1
+
+1. Clean-up all compiler warnings possible.
+2. Add Table of Contents
+3. Modify Version String
+
 ### Releases v1.1.0
 
 1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
@@ -18,24 +121,27 @@
 1. Update to use the new LittleFS for ESP8266 core 2.7.1+
 2. Update [minimal example](examples/minimal)
 
-### Releases v1.0.2
+#### Releases v1.0.2
 
 1. Fix bug by left-over cpp file.
 2. Fix bug in example.
 3. Enhance README.md
 
-This library is based on, modified, bug-fixed and improved from [`DataCute`](https://github.com/datacute/DoubleResetDetector) to add support for ESP32.
- 
-Using this library to detect a double reset, using
+#### Releases v1.0.1
 
-1. RTC Memory, EEPROM, LittleFS or SPIFFS for ESP8266
-2. EEPROM and SPIFFS for ESP32.
+1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
+2. Add SPIFFS support, besides EEPROM, for ESP32
+
+---
+---
 
 ## Prerequisites
 
 1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. [`ESP32 Core 1.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards
 3. [`ESP8266 Core 2.7.4+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. SPIFFS is deprecated from ESP8266 core 2.7.1+. 
+
+---
 
 ## Installation
 
@@ -57,12 +163,6 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `ESP_Do
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
----
-
-#### PURPOSE:
-
-Detects a double reset so that an alternative start-up mode can be used. One example use is to allow re-configuration of a device's wifi credentials.
-
 ---
 
 #### HOWTO Usage
@@ -153,38 +253,64 @@ void loop()
 ### Examples
 
 1. [ConfigOnDoubleReset](examples/ConfigOnDoubleReset)
-2. [minimal](examples/minimal)
+2. [ConfigOnDRD_ESP32_minimal](examples/ConfigOnDRD_ESP32_minimal)
+3. [ConfigOnDRD_ESP8266_minimal](examples/ConfigOnDRD_ESP8266_minimal)
+4. [minimal](examples/minimal)
 
 ### Examples from other libraries
 
 #### 1.[ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
 
-1. [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
-2. [ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr)
-3. [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
-4. [ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
-
-
+* [ 1. ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
+* [ 2. ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr)
+* [ 3. ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD)
+* [ 4. ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP_FSWebServer_DRD)
+* [ 5. ConfigOnDRD_ESP32_minimal](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_ESP32_minimal)
+* [ 6. ConfigOnDRD_ESP8266_minimal](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_ESP8266_minimal)
+* [ 7. ConfigOnDRD_FS_MQTT_Ptr_Complex](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr_Complex)
+* [ 8. ConfigOnDRD_FS_MQTT_Ptr_Medium](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDRD_FS_MQTT_Ptr_Medium)
+  
+    
 #### 2. [ESPAsync_WiFiManager Library](https://github.com/khoih-prog/ESPAsync_WiFiManager)
 
-1. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
-2. [Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
-3. [Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
-4. [Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+* [ 1. Async_ConfigOnDoubleReset](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDoubleReset)
+* [ 2. Async_ConfigOnDRD_FS_MQTT_Ptr](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr)
+* [ 3. Async_ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP32_FSWebServer_DRD)
+* [ 4. Async_ESP_FSWebServer_DRD](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ESP_FSWebServer_DRD)
+* [ 5. Async_ConfigOnDRD_ESP32_minimal](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_ESP32_minimal)
+* [ 6. Async_ConfigOnDRD_ESP8266_minimal](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_ESP8266_minimal)
+* [ 7. Async_ConfigOnDRD_FS_MQTT_Ptr_Complex](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr_Complex)
+* [ 8. Async_ConfigOnDRD_FS_MQTT_Ptr_Medium](https://github.com/khoih-prog/ESPAsync_WiFiManager/tree/master/examples/Async_ConfigOnDRD_FS_MQTT_Ptr_Medium)
 
 and there are many more.
 
+#### Many other libraries are depending on this library's DRD feature
+
+  All examples of these following libraries are using DRD feature of this [ESP_DoubleResetDetector Library](https://github.com/khoih-prog/ESP_DoubleResetDetector)
+
+
+* [ 1. Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
+* [ 2. Blynk_Async_WM](https://github.com/khoih-prog/Blynk_Async_WM)
+* [ 3. BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM)
+* [ 4. BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF)
+* [ 5. BlynkGSM_Manager](https://github.com/khoih-prog/BlynkEthernet_WM)
+* [ 6. Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
+* [ 7. Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager)
+* [ 8. Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
+
 ---
 ---
 
-### Debug Termimal Output Samples
+### Debug Terminal Output Samples
 
-1. This is terminal debug output when running [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials. The boards then connected to WiFi AP **HueNet1** using new Static IP successfully. WiFi AP **HueNet1** is then lost, and board **autoreconnects** itself to backup WiFi AP **HueNet2**.
+#### 1. ESP32_FSWebServer_DRD on ESP32_DEV
+
+This is terminal debug output when running [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials. The boards then connected to WiFi AP **HueNet1** using new Static IP successfully. WiFi AP **HueNet1** is then lost, and board **autoreconnects** itself to backup WiFi AP **HueNet2**.
 
 ```cpp
 Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
-ESP_WiFiManager Version v1.3.0
-ESP_DoubleResetDetector Version v1.1.0
+ESP_WiFiManager Version v1.4.1
+ESP_DoubleResetDetector Version v1.1.1
 FS File: /ConfigSW.json, size: 150B
 FS File: /CanadaFlag_1.png, size: 40.25KB
 FS File: /CanadaFlag_2.png, size: 8.12KB
@@ -242,14 +368,15 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 
 ---
 
-1. This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials.
+#### 2. ConfigOnDoubleReset on ESP32_DEV
+
+This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials.
 
 
 ```
-
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.3.0
-ESP_DoubleResetDetector Version v1.1.0
+ESP_WiFiManager Version v1.4.1
+ESP_DoubleResetDetector Version v1.1.1
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = 12345678
@@ -317,9 +444,62 @@ Starting configuration portal.
 ```
 
 ---
+
+### Libraries using ESP_DoubleResetDetector or DoubleResetDetector_Generic library
+
+You can also see how [`ESP_DoubleResetDetector`](https://github.com/khoih-prog/ESP_DoubleResetDetector) and [`DoubleResetDetector_Generic`](https://github.com/khoih-prog/DoubleResetDetector_Generic) are applied in many other libraries, such as:
+
+ 1. [Blynk_WM](https://github.com/khoih-prog/Blynk_WM)
+ 2. [BlynkEthernet_WM](https://github.com/khoih-prog/BlynkEthernet_WM)
+ 3. [WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite)
+ 4. [BlynkESP32_BT_WF](https://github.com/khoih-prog/BlynkESP32_BT_WF), 
+ 5. [Blynk_GSM_Manager](https://github.com/khoih-prog/Blynk_GSM_Manager),
+ 6. [Blynk_Esp8266AT_WM](https://github.com/khoih-prog/Blynk_Esp8266AT_WM), 
+ 7. [Blynk_WiFiNINA_WM](https://github.com/khoih-prog/Blynk_WiFiNINA_WM), 
+ 8. [Blynk_Async_WM](https://github.com/khoih-prog/Blynk_Async_WM),
+ 9. [Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF), 
+10. [Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager),
+11. [ESP_WiFiManager](https://github.com/khoih-prog/ESP_WiFiManager)
+12. [ESPAsync_WiFiManager](https://github.com/khoih-prog/ESPAsync_WiFiManager)
+13. [WiFiManager_NINA_Lite](https://github.com/khoih-prog/WiFiManager_NINA_Lite)
+14. [BlynkEthernet_STM32_WM](https://github.com/khoih-prog/BlynkEthernet_STM32_WM),
+15. [ESP_AT_WM_Lite](https://github.com/khoih-prog/ESP_AT_WM_Lite)
+16. [WIOTerminal_WiFiManager](https://github.com/khoih-prog/WIOTerminal_WiFiManager)
+17. [Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
+18. [Ethernet_Manager_STM32](https://github.com/khoih-prog/Ethernet_Manager_STM32)
+
+and the list is growing fast.
+
+---
+---
+
+### Debug
+
+Debug is disabled by default. To enable debug:
+
+```cpp
+// Use this to output debug msgs to Serial
+#define DOUBLERESETDETECTOR_DEBUG       true
+```
+
+---
+
+### Troubleshooting
+
+If you get compilation errors, more often than not, you may need to install a newer version of the `ESP32 / ESP8266` core for Arduino.
+
+Sometimes, the library will only work if you update the `ESP32 / ESP8266` core to the latest version because I am using some newly added function.
+
+---
 ---
 
 ### Releases
+
+### Releases v1.1.1
+
+1. Clean-up all compiler warnings possible.
+2. Add Table of Contents
+3. Modify Version String
 
 ### Releases v1.1.0
 
@@ -342,14 +522,6 @@ Starting configuration portal.
 2. Add SPIFFS support, besides EEPROM, for ESP32
 
 ---
----
-
-### Troubleshooting
-
-If you get compilation errors, more often than not, you may need to install a newer version of the `ESP32 / ESP8266` core for Arduino.
-
-Sometimes, the library will only work if you update the `ESP32 / ESP8266` core to the latest version because I am using some newly added function.
-
 ---
 
 ### Issues ###
@@ -395,7 +567,7 @@ If you want to contribute to this project:
 
 ---
 
-### License and credits ###
+### License
 
 - The library is licensed under [MIT](https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/master/LICENSE)
 

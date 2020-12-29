@@ -9,7 +9,7 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.1.0
+   Version: 1.1.1
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -18,6 +18,7 @@
     1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
     1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
     1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
+    1.1.1   K Hoang      28/12/2020 Suppress all possible compiler warnings
 *****************************************************************************************************************************/
 
 #pragma once
@@ -31,7 +32,8 @@
   #include <WProgram.h>
 #endif
 
-#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "v1.1.0"
+#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.1.1"
+#define ESP_DOUBLERESETDETECTOR_VERSION         ESP_DOUBLE_RESET_DETECTOR_VERSION
 
 //#define ESP_DRD_USE_EEPROM      false
 //#define ESP_DRD_USE_LITTLEFS    false
@@ -111,8 +113,6 @@
 #define DOUBLERESETDETECTOR_DEBUG       false
 #endif
 
-#define ESP_DOUBLERESETDETECTOR_VERSION "1.0.1"
-
 #define DOUBLERESETDETECTOR_FLAG_SET    0xD0D01234
 #define DOUBLERESETDETECTOR_FLAG_CLEAR  0xD0D04321
 
@@ -123,7 +123,7 @@ class DoubleResetDetector
     {
 #if ESP_DRD_USE_EEPROM
 #if (DOUBLERESETDETECTOR_DEBUG)
-      Serial.println("EEPROM size = " + String(EEPROM_SIZE) + ", start = " + String(EEPROM_START));
+      Serial.printf("EEPROM size = %d, start = %d\n", EEPROM_SIZE, EEPROM_START);
 #endif
 
       EEPROM.begin(EEPROM_SIZE);
@@ -202,7 +202,7 @@ class DoubleResetDetector
 
   private:
     uint32_t DOUBLERESETDETECTOR_FLAG;
-    int timeout;
+    unsigned long timeout;
     int address;
     bool waitingForDoubleReset;
 
@@ -213,7 +213,7 @@ class DoubleResetDetector
       doubleResetDetectorFlag = DOUBLERESETDETECTOR_FLAG;
 
 #if (DOUBLERESETDETECTOR_DEBUG)
-      Serial.println("EEPROM Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+      Serial.printf("EEPROM Flag read = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #endif
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
       // LittleFS / SPIFFS code
@@ -235,9 +235,9 @@ class DoubleResetDetector
 #if (DOUBLERESETDETECTOR_DEBUG)
 
 #if ESP_DRD_USE_LITTLEFS
-        Serial.println("LittleFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+        Serial.printf("LittleFS Flag read = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #else
-        Serial.println("SPIFFS Flag read = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+        Serial.printf("SPIFFS Flag read = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #endif
 
 #endif
@@ -268,7 +268,8 @@ class DoubleResetDetector
 #if (DOUBLERESETDETECTOR_DEBUG)
       delay(1000);
       EEPROM.get(EEPROM_START, DOUBLERESETDETECTOR_FLAG);
-      Serial.println("SetFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+
+      Serial.printf("SetFlag write = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #endif
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
       // LittleFS / SPIFFS code
@@ -313,7 +314,8 @@ class DoubleResetDetector
 #if (DOUBLERESETDETECTOR_DEBUG)
       delay(1000);
       EEPROM.get(EEPROM_START, DOUBLERESETDETECTOR_FLAG);
-      Serial.println("ClearFlag write = 0x" + String(DOUBLERESETDETECTOR_FLAG, HEX) );
+
+      Serial.printf("ClearFlag write = 0x%X\n", DOUBLERESETDETECTOR_FLAG);
 #endif
 #elif ( ESP_DRD_USE_LITTLEFS || ESP_DRD_USE_SPIFFS )
       // LittleFS / SPIFFS code
