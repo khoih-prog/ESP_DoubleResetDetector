@@ -1,24 +1,25 @@
 /****************************************************************************************************************************
-   ESP_DoubleResetDetector.h
-   For ESP8266 / ESP32 boards
+  ESP_DoubleResetDetector.h
+  For ESP8266 / ESP32 boards
 
-   ESP_DoubleResetDetector is a library for the ESP8266/Arduino platform
-   to enable trigger configure mode by resetting ESP32 / ESP8266 twice.
+  ESP_DoubleResetDetector is a library for the ESP8266/Arduino platform
+  to enable trigger configure mode by resetting ESP32 / ESP8266 twice.
 
-   Forked from DataCute https://github.com/datacute/DoubleResetDetector
+  Forked from DataCute https://github.com/datacute/DoubleResetDetector
 
-   Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
-   Licensed under MIT license
-   Version: 1.1.1
+  Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
+  Licensed under MIT license
+  Version: 1.1.2
 
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      15/12/2019 Initial coding
-    1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
-    1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
-    1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
-    1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
-    1.1.1   K Hoang      28/12/2020 Suppress all possible compiler warnings
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      15/12/2019 Initial coding
+  1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
+  1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
+  1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
+  1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
+  1.1.1   K Hoang      28/12/2020 Suppress all possible compiler warnings
+  1.1.2   K Hoang      10/10/2021  Update `platform.ini` and `library.json`
 *****************************************************************************************************************************/
 
 #pragma once
@@ -32,7 +33,7 @@
   #include <WProgram.h>
 #endif
 
-#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.1.1"
+#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.1.2"
 #define ESP_DOUBLERESETDETECTOR_VERSION         ESP_DOUBLE_RESET_DETECTOR_VERSION
 
 //#define ESP_DRD_USE_EEPROM      false

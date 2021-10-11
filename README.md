@@ -14,12 +14,7 @@
 * [Why do we need this ESP_DoubleResetDetector library](#why-do-we-need-this-esp_doubleresetdetector-library)
   * [Features](#features)
   * [Currently supported Boards](#currently-supported-boards)
-* [Changelog](#changelog)
-  * [Releases v1.1.1](#releases-v111)
-  * [Releases v1.1.0](#releases-v110)
-  * [Releases v1.0.3](#releases-v103)
-  * [Releases v1.0.2](#releases-v102)
-  * [Releases v1.0.1](#releases-v101)
+* [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [Use Arduino Library Manager](#use-arduino-library-manager)
@@ -65,7 +60,6 @@
 * [Libraries using ESP_DoubleResetDetector or DoubleResetDetector_Generic library](#libraries-using-esp_doubleresetdetector-or-doubleresetdetector_generic-library)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -102,42 +96,11 @@ This [**ESP_DoubleResetDetector** library](https://github.com/khoih-prog/ESP_Dou
 ---
 ---
 
-## Changelog
-
-### Releases v1.1.1
-
-1. Clean-up all compiler warnings possible.
-2. Add Table of Contents
-3. Modify Version String
-
-### Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
-
-### Releases v1.0.3
-
-1. Update to use the new LittleFS for ESP8266 core 2.7.1+
-2. Update [minimal example](examples/minimal)
-
-#### Releases v1.0.2
-
-1. Fix bug by left-over cpp file.
-2. Fix bug in example.
-3. Enhance README.md
-
-#### Releases v1.0.1
-
-1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
-2. Add SPIFFS support, besides EEPROM, for ESP32
-
----
----
-
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`ESP32 Core 1.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards
-3. [`ESP8266 Core 2.7.4+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. SPIFFS is deprecated from ESP8266 core 2.7.1+. 
+1. [`Arduino IDE 1.8.16+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 Core 2.0.0+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+3. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). SPIFFS is deprecated from ESP8266 core 2.7.1+, to use LittleFS. 
 
 ---
 
@@ -157,7 +120,7 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `ESP_Do
 
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
-3. Install [**ESP_DoubleResetDetector** library](https://platformio.org/lib/show/6935/ESP_DoubleResetDetector) by using [Library Manager](https://platformio.org/lib/show/6935/ESP_DoubleResetDetector/installation). Search for **ESP_DoubleResetDetector** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+3. Install [**ESP_DoubleResetDetector** library](https://platformio.org/lib/show/11521/ESP_DoubleResetDetector) by using [Library Manager](https://platformio.org/lib/show/11521/ESP_DoubleResetDetector/installation). Search for **ESP_DoubleResetDetector** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
 4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
@@ -307,8 +270,8 @@ This is terminal debug output when running [ESP32_FSWebServer_DRD](https://githu
 
 ```cpp
 Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
-ESP_WiFiManager Version v1.4.1
-ESP_DoubleResetDetector Version v1.1.1
+ESP_WiFiManager Version v1.7.5
+ESP_DoubleResetDetector Version v1.1.2
 FS File: /ConfigSW.json, size: 150B
 FS File: /CanadaFlag_1.png, size: 40.25KB
 FS File: /CanadaFlag_2.png, size: 8.12KB
@@ -373,8 +336,8 @@ This is terminal debug output when running [ConfigOnDoubleReset](https://github.
 
 ```
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.4.1
-ESP_DoubleResetDetector Version v1.1.1
+ESP_WiFiManager Version v1.7.5
+ESP_DoubleResetDetector Version v1.1.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = 12345678
@@ -417,8 +380,8 @@ load:0x40080400,len:6352
 entry 0x400806b8
 
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.3.0
-ESP_DoubleResetDetector Version v1.1.0
+ESP_WiFiManager Version v1.7.5
+ESP_DoubleResetDetector Version v1.1.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = jenniqqs
@@ -487,37 +450,6 @@ Debug is disabled by default. To enable debug:
 If you get compilation errors, more often than not, you may need to install a newer version of the `ESP32 / ESP8266` core for Arduino.
 
 Sometimes, the library will only work if you update the `ESP32 / ESP8266` core to the latest version because I am using some newly added function.
-
----
----
-
-### Releases
-
-### Releases v1.1.1
-
-1. Clean-up all compiler warnings possible.
-2. Add Table of Contents
-3. Modify Version String
-
-### Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
-
-### Releases v1.0.3
-
-1. Update to use the new LittleFS for ESP8266 core 2.7.1+
-2. Update [minimal example](examples/minimal)
-
-#### Releases v1.0.2
-
-1. Fix bug by left-over cpp file.
-2. Fix bug in example.
-3. Enhance README.md
-
-#### Releases v1.0.1
-
-1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
-2. Add SPIFFS support, besides EEPROM, for ESP32
 
 ---
 ---

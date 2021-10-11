@@ -1,0 +1,56 @@
+## ESP_DoubleResetDetector
+
+[![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/ESP_DoubleResetDetector.svg)](https://github.com/khoih-prog/ESP_DoubleResetDetector/releases)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/master/LICENSE)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP_DoubleResetDetector.svg)](http://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
+
+---
+---
+
+## Table of Contents
+
+* [Changelog](#changelog)
+  * [Releases v1.1.2](#releases-v112)
+  * [Releases v1.1.1](#releases-v111)
+  * [Releases v1.1.0](#releases-v110)
+  * [Releases v1.0.3](#releases-v103)
+  * [Releases v1.0.2](#releases-v102)
+  * [Releases v1.0.1](#releases-v101)
+ 
+---
+---
+
+## Changelog
+
+### Releases v1.1.2
+
+1. Update `platform.ini` and `library.json` to use original `khoih-prog` instead of `khoih.prog` after PIO fix
+
+### Releases v1.1.1
+
+1. Clean-up all compiler warnings possible.
+2. Add Table of Contents
+3. Modify Version String
+
+### Releases v1.1.0
+
+1. Add support to LittleFS for ESP32 using [LITTLEFS](https://github.com/lorol/LITTLEFS) Library
+
+### Releases v1.0.3
+
+1. Update to use the new LittleFS for ESP8266 core 2.7.1+
+2. Update [minimal example](examples/minimal)
+
+#### Releases v1.0.2
+
+1. Fix bug by left-over cpp file.
+2. Fix bug in example.
+3. Enhance README.md
+
+#### Releases v1.0.1
+
+1. Add EEPROM and SPIFFS support, besides RTC memory, for ESP8266
+2. Add SPIFFS support, besides EEPROM, for ESP32
+

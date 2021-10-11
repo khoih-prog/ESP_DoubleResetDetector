@@ -9,15 +9,6 @@
 
    Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
    Licensed under MIT license
-   Version: 1.1.0
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      15/12/2019 Initial coding
-    1.0.1   K Hoang      30/12/2019 Now can use EEPROM or SPIFFS for both ESP8266 and ESP32. RTC still OK for ESP8266
-    1.0.2   K Hoang      10/04/2020 Fix bug by left-over cpp file and in example.
-    1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
-    1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
  *****************************************************************************************************************************/
 
 // These defines must be put before #include <ESP_DoubleResetDetector.h>
