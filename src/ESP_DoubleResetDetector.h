@@ -9,7 +9,7 @@
 
   Built by Khoi Hoang https://github.com/khoih-prog/ESP_DoubleResetDetector
   Licensed under MIT license
-  Version: 1.1.2
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -19,7 +19,8 @@
   1.0.3   K Hoang      13/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+
   1.1.0   K Hoang      04/12/2020 Add support to LittleFS for ESP32 using LITTLEFS Library
   1.1.1   K Hoang      28/12/2020 Suppress all possible compiler warnings
-  1.1.2   K Hoang      10/10/2021  Update `platform.ini` and `library.json`
+  1.1.2   K Hoang      10/10/2021 Update `platform.ini` and `library.json`
+  1.2.0   K Hoang      26/11/2021 Auto detect ESP32 core and use either built-in LittleFS or LITTLEFS library
 *****************************************************************************************************************************/
 
 #pragma once
@@ -33,7 +34,7 @@
   #include <WProgram.h>
 #endif
 
-#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.1.2"
+#define ESP_DOUBLE_RESET_DETECTOR_VERSION       "ESP_DoubleResetDetector v1.2.0"
 #define ESP_DOUBLERESETDETECTOR_VERSION         ESP_DOUBLE_RESET_DETECTOR_VERSION
 
 //#define ESP_DRD_USE_EEPROM      false
@@ -82,10 +83,17 @@
 #ifdef ESP32
 
   #if ESP_DRD_USE_LITTLEFS
-    // The library will be depreciated after being merged to future major Arduino esp32 core release 2.x
-    // At that time, just remove this library inclusion
-    #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
-    #define FileFS   LITTLEFS
+    // Check cores/esp32/esp_arduino_version.h
+    #if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
+      #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      #include <LittleFS.h>             // https://github.com/lorol/LITTLEFS
+      #define FileFS   LittleFS
+    #else
+      #warning Using ESP32 Core 1.0.4-. You must install LITTLEFS library
+      // The library has been merged into esp32 core from release 1.0.6
+      #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+      #define FileFS   LITTLEFS
+    #endif
   #else
     #include "SPIFFS.h"
     // ESP32 core 1.0.4 still uses SPIFFS

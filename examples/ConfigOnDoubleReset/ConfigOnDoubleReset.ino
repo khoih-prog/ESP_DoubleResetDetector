@@ -65,13 +65,25 @@
     // Use LittleFS
     #include "FS.h"
 
-    // The library will be depreciated after being merged to future major Arduino esp32 core release 2.x
-    // At that time, just remove this library inclusion
-    #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+    // Check cores/esp32/esp_arduino_version.h
+    #if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
+      #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      // The library has been merged into esp32 core from release 1.0.6
+      #include <LittleFS.h>
+      
+      FS* filesystem =      &LittleFS;
+      #define FileFS        LittleFS
+      #define FS_Name       "LittleFS"
+    #else
+      #warning Using ESP32 Core 1.0.4-. You must install LITTLEFS library
+      // The library has been merged into esp32 core from release 1.0.6
+      #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+      
+      FS* filesystem =      &LITTLEFS;
+      #define FileFS        LITTLEFS
+      #define FS_Name       "LittleFS"
+    #endif
     
-    FS* filesystem =      &LITTLEFS;
-    #define FileFS        LITTLEFS
-    #define FS_Name       "LittleFS"
   #elif USE_SPIFFS
     #include <SPIFFS.h>
     FS* filesystem =      &SPIFFS;
