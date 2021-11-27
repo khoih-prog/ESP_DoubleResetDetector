@@ -1,6 +1,6 @@
 {
   "name": "ESP_DoubleResetDetector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "keywords": "rtc,eeprom,littlefs,spiffs,reset,data,esp32,esp8266,double-reset,detector",
   "description": "Library to detect a double reset within a predetermined time, using RTC Memory, EEPROM, LittleFS or SPIFFS for ESP8266 and ESP32",
   "authors":
@@ -27,7 +27,7 @@
     {
       "owner": "lorol",
       "name": "LittleFS_esp32",
-      "version": "^1.0.5",
+      "version": "^1.0.6",
       "platforms": ["espressif32"]
     }
   ],
