@@ -29,7 +29,7 @@
 
 ### Releases v1.3.0
 
-1. Add support to `ESP32_S3` using ESP32 core v2.0.2+
+1. Add support to `ESP32_S3` using [ESP32 core, esp32-s3-support branch, v2.0.2+](https://github.com/espressif/arduino-esp32/tree/esp32-s3-support)
 
 ### Releases v1.2.1
 
