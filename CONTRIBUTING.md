@@ -29,7 +29,7 @@ Please ensure to specify the following:
 Arduino IDE version: 1.8.19
 ESP8266 Core Version 3.0.2
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.4.0-99-generic #112-Ubuntu SMP Thu Feb 3 13:50:55 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+Linux kh-Inspiron-3593 5.4.0-100-generic #113-Ubuntu SMP Thu Feb 3 18:43:29 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
 I encountered a non-response while trying to press the reset button twice.

@@ -6,7 +6,8 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP_DoubleResetDetector.svg)](http://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
 
-<a href="https://www.buymeacoffee.com/khoihprog6" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
+<a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
 
 ---
 ---
@@ -28,6 +29,7 @@
   * [ 2. ConfigOnDRD_ESP32_minimal](examples/ConfigOnDRD_ESP32_minimal)
   * [ 3. ConfigOnDRD_ESP8266_minimal](examples/ConfigOnDRD_ESP8266_minimal)
   * [ 4. minimal](examples/minimal)
+  * [ 5. checkWaitingDRD](examples/checkWaitingDRD) **New**
  * [Examples from other libraries](#examples-from-other-libraries)
   * [ 1. ESP_WiFiManager Library](https://github.com/khoih-prog/ESP_WiFiManager)
     * [ 1. ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset)
@@ -56,6 +58,7 @@
     * [ 6. Blynk_Async_ESP32_BT_WF](https://github.com/khoih-prog/Blynk_Async_ESP32_BT_WF)
     * [ 7. Blynk_Async_GSM_Manager](https://github.com/khoih-prog/Blynk_Async_GSM_Manager)
     * [ 8. Ethernet_Manager](https://github.com/khoih-prog/Ethernet_Manager)
+* [Example checkWaitingDRD](#Example-checkWaitingDRD) 
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. ESP32_FSWebServer_DRD on ESP32_DEV](#1-esp32_fswebserver_drd-on-esp32_dev)
   * [2. ConfigOnDoubleReset on ESP32_DEV](#2-configondoublereset-on-esp32_dev)
@@ -268,16 +271,25 @@ and there are many more.
 ---
 ---
 
+### Example [checkWaitingDRD](examples/checkWaitingDRD)
+
+https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/da76548b25f1c2d4774f154011e7221c1fd7d824/examples/checkWaitingDRD/checkWaitingDRD.ino#L14-L132
+
+
+
+---
+---
+
 ### Debug Terminal Output Samples
 
 #### 1. ESP32_FSWebServer_DRD on ESP32_DEV
 
-This is terminal debug output when running [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials. The boards then connected to WiFi AP **HueNet1** using new Static IP successfully. WiFi AP **HueNet1** is then lost, and board **autoreconnects** itself to backup WiFi AP **HueNet2**.
+This is terminal debug output when running [ESP32_FSWebServer_DRD](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ESP32_FSWebServer_DRD) on  **ESP32 ESP32_DEV.**. Config Portal was requested by DRD to input and save Credentials. The boards then connected to WiFi AP **HueNet1** using new Static IP successfully. WiFi AP **HueNet1** is then lost, and board **autoreconnects** itself to backup WiFi AP **HueNet2**.
 
 ```cpp
 Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
-ESP_WiFiManager Version v1.9.0
-ESP_DoubleResetDetector Version v1.3.0
+ESP_WiFiManager v1.10.1
+ESP_DoubleResetDetector v1.3.1
 FS File: /ConfigSW.json, size: 150B
 FS File: /CanadaFlag_1.png, size: 40.25KB
 FS File: /CanadaFlag_2.png, size: 8.12KB
@@ -337,13 +349,13 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 
 #### 2. ConfigOnDoubleReset on ESP32_DEV
 
-This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  ***ESP32 ESP32_DEV.***. Config Portal was requested by DRD to input and save Credentials.
+This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  **ESP32 ESP32_DEV.**. Config Portal was requested by DRD to input and save Credentials.
 
 
 ```
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.9.0
-ESP_DoubleResetDetector Version v1.3.0
+ESP_WiFiManager v1.10.1
+ESP_DoubleResetDetector v1.3.1
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = 12345678
@@ -386,8 +398,8 @@ load:0x40080400,len:6352
 entry 0x400806b8
 
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.9.0
-ESP_DoubleResetDetector Version v1.3.0
+ESP_WiFiManager Version v1.10.1
+ESP_DoubleResetDetector Version v1.3.1
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = jenniqqs
@@ -414,13 +426,13 @@ Starting configuration portal.
 
 #### 3. ESPAsync_WiFi using LittleFS on ESP32S3_DEV
 
-This is terminal debug output when running [ESPAsync_WiFi](https://github.com/khoih-prog/ESPAsync_WiFiManager_Lite/tree/master/examples/ESPAsync_WiFi) on  ***ESP32 ESP32S3_DEV.***. Config Portal was requested by DRD to input and save Credentials.
+This is terminal debug output when running [ESPAsync_WiFi](https://github.com/khoih-prog/ESPAsync_WiFiManager_Lite/tree/master/examples/ESPAsync_WiFi) on  **ESP32 ESP32S3_DEV.**. Config Portal was requested by DRD to input and save Credentials.
 
 
 ```
 Starting ESPAsync_WiFi using LittleFS on ESP32S3_DEV
-ESPAsync_WiFiManager_Lite v1.7.0
-ESP_DoubleResetDetector v1.3.0
+ESPAsync_WiFiManager_Lite v1.8.2
+ESP_DoubleResetDetector v1.3.1
 LittleFS Flag read = 0xD0D01234
 doubleResetDetected
 Saving config file...
@@ -536,10 +548,13 @@ Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog
 ### Contributions and thanks
 
 1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+1. Thanks to [Tochi Moreno](https://github.com/tochimoreno) for enhancement request in [DRD is waiting for a double reset? #14](https://github.com/khoih-prog/ESP_DoubleResetDetector/discussions/14) leading to v1.3.1 to add `waitingForDRD()` function to signal in DRD wating period
+
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/zobix"><img src="https://github.com/zobix.png" width="100px;" alt="zobix"/><br /><sub><b>Zobix</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/tochimoreno"><img src="https://github.com/tochimoreno.png" width="100px;" alt="tochimoreno"/><br /><sub><b>Tochi Moreno</b></sub></a><br /></td>
   </tr> 
 </table>
 

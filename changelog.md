@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.3.1](#releases-v131)
   * [Releases v1.3.0](#releases-v130)
   * [Releases v1.2.1](#releases-v121)
   * [Releases v1.2.0](#releases-v120)
@@ -26,6 +27,11 @@
 ---
 
 ## Changelog
+
+### Releases v1.3.1
+
+1. Add waitingForDRD() function to signal in DRD wating period. Check [DRD is waiting for a double reset? #14](https://github.com/khoih-prog/ESP_DoubleResetDetector/discussions/14)
+2. Add example [checkWaitingDRD](https://github.com/khoih-prog/ESP_DoubleResetDetector/tree/master/examples/checkWaitingDRD) to demo how to use the new feature.
 
 ### Releases v1.3.0
 
