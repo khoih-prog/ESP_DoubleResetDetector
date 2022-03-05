@@ -309,7 +309,7 @@ IPAddress APStaticSN  = IPAddress(255, 255, 255, 0);
 #include <ESP_WiFiManager.h>              //https://github.com/khoih-prog/ESP_WiFiManager
 
 // Function Prototypes
-uint8_t connectMultiWiFi(void);
+uint8_t connectMultiWiFi();
 
 ///////////////////////////////////////////
 // New in v1.4.0
@@ -444,7 +444,7 @@ uint8_t connectMultiWiFi()
   return status;
 }
 
-void heartBeatPrint(void)
+void heartBeatPrint()
 {
   static int num = 1;
 
@@ -464,7 +464,7 @@ void heartBeatPrint(void)
   }
 }
 
-void check_WiFi(void)
+void check_WiFi()
 {
   if ( (WiFi.status() != WL_CONNECTED) )
   {
@@ -473,7 +473,7 @@ void check_WiFi(void)
   }
 }
 
-void check_status(void)
+void check_status()
 {
   static ulong checkstatus_timeout  = 0;
   static ulong checkwifi_timeout    = 0;
