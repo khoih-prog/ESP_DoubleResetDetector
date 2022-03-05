@@ -17,7 +17,7 @@
 // For ESP8266, You must select one to be true (RTC, EEPROM, LITTLEFS or SPIFFS)
 // Otherwise, library will use default EEPROM storage
 
-// This example demonstrate how to use new function waitingForDRD() to signal the stage of DRD
+// This example demonstrates how to use new function waitingForDRD() to signal the stage of DRD
 // waitingForDRD() returns true if in DRD_TIMEOUT, false when out of DRD_TIMEOUT
 // In this example, LED_BUILTIN will blink in DRD_TIMEOUT period, ON when DR has been detected, OFF otherwise
 
