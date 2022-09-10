@@ -31,7 +31,7 @@
 
 ### Releases v1.3.2
 
-1. Fix ESP32 chipID for example`ConfigOnDoubleReset`
+1. Fix ESP32 chipID for example `ConfigOnDoubleReset`
 2. Remove dependency on `LittleFS_esp32` library to prevent PIO error when using new ESP32 core v1.0.6+
 
 ### Releases v1.3.1
