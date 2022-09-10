@@ -105,10 +105,9 @@ This [**ESP_DoubleResetDetector** library](https://github.com/khoih-prog/ESP_Dou
 ## Prerequisites
 
 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
-2. [`ESP32 Core 2.0.2+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+2. [`ESP32 Core 2.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
 3. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). SPIFFS is deprecated from ESP8266 core 2.7.1+, to use LittleFS. 
-
-4. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS with ESP32 core v1.0.5-. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [ESP32 core v1.0.6+](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS) and you don't need to install it if using ESP32 core v1.0.6+
+4. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS with ESP32 core **v1.0.5-**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [ESP32 core v1.0.6+](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS) and **you don't need to install it if using ESP32 core v1.0.6+**
 
 ---
 ---
@@ -288,8 +287,8 @@ This is terminal debug output when running [ESP32_FSWebServer_DRD](https://githu
 
 ```cpp
 Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
-ESP_WiFiManager v1.10.1
-ESP_DoubleResetDetector v1.3.1
+ESP_WiFiManager v1.11.0
+ESP_DoubleResetDetector v1.3.2
 FS File: /ConfigSW.json, size: 150B
 FS File: /CanadaFlag_1.png, size: 40.25KB
 FS File: /CanadaFlag_2.png, size: 8.12KB
@@ -354,8 +353,8 @@ This is terminal debug output when running [ConfigOnDoubleReset](https://github.
 
 ```
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager v1.10.1
-ESP_DoubleResetDetector v1.3.1
+ESP_WiFiManager v1.11.0
+ESP_DoubleResetDetector v1.3.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = 12345678
@@ -398,8 +397,8 @@ load:0x40080400,len:6352
 entry 0x400806b8
 
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager Version v1.10.1
-ESP_DoubleResetDetector Version v1.3.1
+ESP_WiFiManager v1.11.0
+ESP_DoubleResetDetector v1.3.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
 Stored: SSID = HueNet1, Pass = jenniqqs
@@ -431,8 +430,8 @@ This is terminal debug output when running [ESPAsync_WiFi](https://github.com/kh
 
 ```
 Starting ESPAsync_WiFi using LittleFS on ESP32S3_DEV
-ESPAsync_WiFiManager_Lite v1.8.2
-ESP_DoubleResetDetector v1.3.1
+ESPAsync_WiFiManager_Lite v1.9.0
+ESP_DoubleResetDetector v1.3.2
 LittleFS Flag read = 0xD0D01234
 doubleResetDetected
 Saving config file...
@@ -540,6 +539,9 @@ Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog
 2. Similar features for Arduino (UNO, Mega, SAM DUE, SAMD21/SAMD51, nRF52, STM32, Teensy, etc.). Look at [**DoubleResetDetector_Generic**](https://github.com/khoih-prog/DoubleResetDetector_Generic)
 3. Add support to `ESP32_C3`, `ESP32_S2`
 4. Add support to `ESP32_S3` using ESP32 core v2.0.2+
+5. Add waitingForDRD() function to signal in DRD wating period
+6. Fix ESP32 chipID for example`ConfigOnDoubleReset`
+7. Remove dependency on `LittleFS_esp32` library to prevent PIO error when using new ESP32 core v1.0.6+
 
 
 ---
@@ -579,3 +581,5 @@ If you want to contribute to this project:
 ### Copyright
 
 Copyright 2019- Khoi Hoang
+
+

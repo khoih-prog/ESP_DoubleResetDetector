@@ -39,8 +39,11 @@
  *****************************************************************************************************************************/
 
 #if !( defined(ESP8266) ||  defined(ESP32) )
-#error This code is intended to run on the ESP8266 or ESP32 platform! Please check your Tools->Board setting.
+  #error This code is intended to run on the ESP8266 or ESP32 platform! Please check your Tools->Board setting.
 #endif
+
+#define ESP_WIFIMANAGER_VERSION_MIN_TARGET      "ESP_WiFiManager v1.11.0"
+#define ESP_WIFIMANAGER_VERSION_MIN             1011000
 
 // Use from 0 to 4. Higher number, more debugging messages and memory usage.
 #define _WIFIMGR_LOGLEVEL_    3
@@ -58,8 +61,14 @@
   WiFiMulti wifiMulti;
 
   // LittleFS has higher priority than SPIFFS
-  #define USE_LITTLEFS    true
-  #define USE_SPIFFS      false
+  #if ( defined(ESP_ARDUINO_VERSION_MAJOR) && (ESP_ARDUINO_VERSION_MAJOR >= 2) )
+    #define USE_LITTLEFS    true
+    #define USE_SPIFFS      false
+  #elif defined(ARDUINO_ESP32C3_DEV)
+    // For core v1.0.6-, ESP32-C3 only supporting SPIFFS and EEPROM. To use v2.0.0+ for LittleFS
+    #define USE_LITTLEFS          false
+    #define USE_SPIFFS            true
+  #endif
 
   #if USE_LITTLEFS
     // Use LittleFS
@@ -68,17 +77,23 @@
     // Check cores/esp32/esp_arduino_version.h and cores/esp32/core_version.h
     //#if ( ESP_ARDUINO_VERSION >= ESP_ARDUINO_VERSION_VAL(2, 0, 0) )  //(ESP_ARDUINO_VERSION_MAJOR >= 2)
     #if ( defined(ESP_ARDUINO_VERSION_MAJOR) && (ESP_ARDUINO_VERSION_MAJOR >= 2) )
-      #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      #if (_WIFIMGR_LOGLEVEL_ > 3)
+        #warning Using ESP32 Core 1.0.6 or 2.0.0+
+      #endif
+      
       // The library has been merged into esp32 core from release 1.0.6
-      #include <LittleFS.h>
+      #include <LittleFS.h>       // https://github.com/espressif/arduino-esp32/tree/master/libraries/LittleFS
       
       FS* filesystem =      &LittleFS;
       #define FileFS        LittleFS
       #define FS_Name       "LittleFS"
     #else
-      #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
+      #if (_WIFIMGR_LOGLEVEL_ > 3)
+        #warning Using ESP32 Core 1.0.5-. You must install LITTLEFS library
+      #endif
+      
       // The library has been merged into esp32 core from release 1.0.6
-      #include <LITTLEFS.h>             // https://github.com/lorol/LITTLEFS
+      #include <LITTLEFS.h>       // https://github.com/lorol/LITTLEFS
       
       FS* filesystem =      &LITTLEFS;
       #define FileFS        LITTLEFS
@@ -99,8 +114,6 @@
   #endif
     //////
     
-    #define ESP_getChipId()   ((uint32_t)ESP.getEfuseMac())
-
 #define LED_BUILTIN       2
 #define LED_ON            HIGH
 #define LED_OFF           LOW
@@ -196,14 +209,6 @@ DoubleResetDetector* drd;//////
 // Onboard LED I/O pin on NodeMCU board
 const int PIN_LED = 2; // D4 on NodeMCU and WeMos. GPIO2/ADC12 of ESP32. Controls the onboard LED.
 
-// SSID and PW for Config Portal
-String ssid = "ESP_" + String(ESP_getChipId(), HEX);
-const char* password = "your_password";
-
-// SSID and PW for your Router
-String Router_SSID;
-String Router_Pass;
-
 // From v1.1.0
 // You only need to format the filesystem once
 //#define FORMAT_FILESYSTEM       true
@@ -229,9 +234,16 @@ typedef struct
 
 #define NUM_WIFI_CREDENTIALS      2
 
+// Assuming max 491 chars
+#define TZNAME_MAX_LEN            50
+#define TIMEZONE_MAX_LEN          50
+
 typedef struct
 {
   WiFi_Credentials  WiFi_Creds [NUM_WIFI_CREDENTIALS];
+  char TZ_Name[TZNAME_MAX_LEN];     // "America/Toronto"
+  char TZ[TIMEZONE_MAX_LEN];        // "EST5EDT,M3.2.0,M11.1.0"
+  uint16_t checksum;
 } WM_Config;
 
 WM_Config         WM_config;
@@ -245,7 +257,7 @@ bool initialConfig = false;
 // Use false if you don't like to display Available Pages in Information Page of Config Portal
 // Comment out or use true to display Available Pages in Information Page of Config Portal
 // Must be placed before #include <ESP_WiFiManager.h>
-#define USE_AVAILABLE_PAGES     false
+#define USE_AVAILABLE_PAGES     true    //false
 
 // From v1.0.10 to permit disable/enable StaticIP configuration in Config Portal from sketch. Valid only if DHCP is used.
 // You'll loose the feature of dynamically changing from DHCP to static IP, or vice versa
@@ -254,7 +266,20 @@ bool initialConfig = false;
 
 // Use false to disable NTP config. Advisable when using Cellphone, Tablet to access Config Portal.
 // See Issue 23: On Android phone ConfigPortal is unresponsive (https://github.com/khoih-prog/ESP_WiFiManager/issues/23)
-#define USE_ESP_WIFIMANAGER_NTP     false
+#define USE_ESP_WIFIMANAGER_NTP     true
+
+// Just use enough to save memory. On ESP8266, can cause blank ConfigPortal screen
+// if using too much memory
+#define USING_AFRICA        false
+#define USING_AMERICA       true
+#define USING_ANTARCTICA    false
+#define USING_ASIA          false
+#define USING_ATLANTIC      false
+#define USING_AUSTRALIA     false
+#define USING_EUROPE        false
+#define USING_INDIAN        false
+#define USING_PACIFIC       false
+#define USING_ETC_GMT       false
 
 // Use true to enable CloudFlare NTP service. System can hang if you don't have Internet access while accessing CloudFlare
 // See Issue #21: CloudFlare link in the default portal (https://github.com/khoih-prog/ESP_WiFiManager/issues/21)
@@ -262,51 +287,79 @@ bool initialConfig = false;
 
 // New in v1.0.11
 #define USING_CORS_FEATURE          true
-//////
+
+////////////////////////////////////////////
 
 // Use USE_DHCP_IP == true for dynamic DHCP IP, false to use static IP which you have to change accordingly to your network
 #if (defined(USE_STATIC_IP_CONFIG_IN_CP) && !USE_STATIC_IP_CONFIG_IN_CP)
-// Force DHCP to be true
-#if defined(USE_DHCP_IP)
-#undef USE_DHCP_IP
-#endif
-#define USE_DHCP_IP     true
+  // Force DHCP to be true
+  #if defined(USE_DHCP_IP)
+    #undef USE_DHCP_IP
+  #endif
+  #define USE_DHCP_IP     true
 #else
-// You can select DHCP or Static IP here
-#define USE_DHCP_IP     true
-//#define USE_DHCP_IP     false
+  // You can select DHCP or Static IP here
+  #define USE_DHCP_IP     true
+  //#define USE_DHCP_IP     false
 #endif
 
-#if ( USE_DHCP_IP || ( defined(USE_STATIC_IP_CONFIG_IN_CP) && !USE_STATIC_IP_CONFIG_IN_CP ) )
-// Use DHCP
-#warning Using DHCP IP
-IPAddress stationIP   = IPAddress(0, 0, 0, 0);
-IPAddress gatewayIP   = IPAddress(192, 168, 2, 1);
-IPAddress netMask     = IPAddress(255, 255, 255, 0);
+#if ( USE_DHCP_IP )
+  // Use DHCP
+  
+  #if (_WIFIMGR_LOGLEVEL_ > 3)
+    #warning Using DHCP IP
+  #endif
+  
+  IPAddress stationIP   = IPAddress(0, 0, 0, 0);
+  IPAddress gatewayIP   = IPAddress(192, 168, 2, 1);
+  IPAddress netMask     = IPAddress(255, 255, 255, 0);
+  
 #else
-// Use static IP
-#warning Using static IP
-#ifdef ESP32
-IPAddress stationIP   = IPAddress(192, 168, 2, 232);
-#else
-IPAddress stationIP   = IPAddress(192, 168, 2, 186);
+  // Use static IP
+  
+  #if (_WIFIMGR_LOGLEVEL_ > 3)
+    #warning Using static IP
+  #endif
+  
+  #ifdef ESP32
+    IPAddress stationIP   = IPAddress(192, 168, 2, 232);
+  #else
+    IPAddress stationIP   = IPAddress(192, 168, 2, 186);
+  #endif
+  
+  IPAddress gatewayIP   = IPAddress(192, 168, 2, 1);
+  IPAddress netMask     = IPAddress(255, 255, 255, 0);
 #endif
 
-IPAddress gatewayIP   = IPAddress(192, 168, 2, 1);
-IPAddress netMask     = IPAddress(255, 255, 255, 0);
-#endif
+////////////////////////////////////////////
 
 #define USE_CONFIGURABLE_DNS      true
 
 IPAddress dns1IP      = gatewayIP;
 IPAddress dns2IP      = IPAddress(8, 8, 8, 8);
 
+#define USE_CUSTOM_AP_IP          false
+
 // New in v1.4.0
-IPAddress APStaticIP  = IPAddress(192, 168, 100, 1);
-IPAddress APStaticGW  = IPAddress(192, 168, 100, 1);
+IPAddress APStaticIP  = IPAddress(192, 168, 232, 1);
+IPAddress APStaticGW  = IPAddress(192, 168, 232, 1);
 IPAddress APStaticSN  = IPAddress(255, 255, 255, 0);
 
+// Must be placed before #include <ESP_WiFiManager.h>, or default port 80 will be used
+//#define HTTP_PORT     8080
+
 #include <ESP_WiFiManager.h>              //https://github.com/khoih-prog/ESP_WiFiManager
+
+// Redundant, for v1.8.0 only
+//#include <ESP_WiFiManager-Impl.h>         //https://github.com/khoih-prog/ESP_WiFiManager
+
+// SSID and PW for Config Portal
+String ssid       = "ESP_" + String(ESP_getChipId(), HEX);
+String password;
+
+// SSID and PW for your Router
+String Router_SSID;
+String Router_Pass;
 
 // Function Prototypes
 uint8_t connectMultiWiFi();
@@ -381,22 +434,32 @@ void configWiFi(WiFi_STA_IPConfig in_WM_STA_IPconfig)
 uint8_t connectMultiWiFi()
 {
 #if ESP32
-  // For ESP32, this better be 0 to shorten the connect time
-  #define WIFI_MULTI_1ST_CONNECT_WAITING_MS       0
+  // For ESP32, this better be 0 to shorten the connect time.
+  // For ESP32-S2/C3, must be > 500
+  #if ( USING_ESP32_S2 || USING_ESP32_C3 )
+    #define WIFI_MULTI_1ST_CONNECT_WAITING_MS           500L
+  #else
+    // For ESP32 core v1.0.6, must be >= 500
+    #define WIFI_MULTI_1ST_CONNECT_WAITING_MS           800L
+  #endif
 #else
   // For ESP8266, this better be 2200 to enable connect the 1st time
-  #define WIFI_MULTI_1ST_CONNECT_WAITING_MS       2200L
+  #define WIFI_MULTI_1ST_CONNECT_WAITING_MS             2200L
 #endif
 
-#define WIFI_MULTI_CONNECT_WAITING_MS           100L
-  
+#define WIFI_MULTI_CONNECT_WAITING_MS                   500L
+
   uint8_t status;
 
+  //WiFi.mode(WIFI_STA);
+
   LOGERROR(F("ConnectMultiWiFi with :"));
-  
+
   if ( (Router_SSID != "") && (Router_Pass != "") )
   {
     LOGERROR3(F("* Flash-stored Router_SSID = "), Router_SSID, F(", Router_Pass = "), Router_Pass );
+    LOGERROR3(F("* Add SSID = "), Router_SSID, F(", PW = "), Router_Pass );
+    wifiMulti.addAP(Router_SSID.c_str(), Router_Pass.c_str());
   }
 
   for (uint8_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
@@ -407,10 +470,10 @@ uint8_t connectMultiWiFi()
       LOGERROR3(F("* Additional SSID = "), WM_config.WiFi_Creds[i].wifi_ssid, F(", PW = "), WM_config.WiFi_Creds[i].wifi_pw );
     }
   }
-  
+
   LOGERROR(F("Connecting MultiWifi..."));
 
-  WiFi.mode(WIFI_STA);
+  //WiFi.mode(WIFI_STA);
 
 #if !USE_DHCP_IP
   // New in v1.4.0
@@ -419,12 +482,13 @@ uint8_t connectMultiWiFi()
 #endif
 
   int i = 0;
+  
   status = wifiMulti.run();
   delay(WIFI_MULTI_1ST_CONNECT_WAITING_MS);
 
   while ( ( i++ < 20 ) && ( status != WL_CONNECTED ) )
   {
-    status = wifiMulti.run();
+    status = WiFi.status();
 
     if ( status == WL_CONNECTED )
       break;
@@ -439,19 +503,64 @@ uint8_t connectMultiWiFi()
     LOGERROR3(F("Channel:"), WiFi.channel(), F(",IP address:"), WiFi.localIP() );
   }
   else
+  {
     LOGERROR(F("WiFi not connected"));
+
+    // To avoid unnecessary DRD
+    drd->loop();
+  
+#if ESP8266      
+    ESP.reset();
+#else
+    ESP.restart();
+#endif  
+  }
 
   return status;
 }
 
+#if USE_ESP_WIFIMANAGER_NTP
+
+void printLocalTime()
+{
+#if ESP8266
+  static time_t now;
+  
+  now = time(nullptr);
+  
+  if ( now > 1451602800 )
+  {
+    Serial.print("Local Date/Time: ");
+    Serial.print(ctime(&now));
+  }
+#else
+  struct tm timeinfo;
+
+  getLocalTime( &timeinfo );
+
+  // Valid only if year > 2000. 
+  // You can get from timeinfo : tm_year, tm_mon, tm_mday, tm_hour, tm_min, tm_sec
+  if (timeinfo.tm_year > 100 )
+  {
+    Serial.print("Local Date/Time: ");
+    Serial.print( asctime( &timeinfo ) );
+  }
+#endif
+}
+
+#endif
+
 void heartBeatPrint()
 {
+#if USE_ESP_WIFIMANAGER_NTP
+  printLocalTime();
+#else
   static int num = 1;
 
   if (WiFi.status() == WL_CONNECTED)
-    Serial.print("H");        // H means connected to WiFi
+    Serial.print(F("H"));        // H means connected to WiFi
   else
-    Serial.print("F");        // F means not connected to WiFi
+    Serial.print(F("F"));        // F means not connected to WiFi
 
   if (num == 80)
   {
@@ -460,15 +569,16 @@ void heartBeatPrint()
   }
   else if (num++ % 10 == 0)
   {
-    Serial.print(" ");
+    Serial.print(F(" "));
   }
+#endif  
 }
 
 void check_WiFi()
 {
   if ( (WiFi.status() != WL_CONNECTED) )
   {
-    Serial.println("\nWiFi lost. Call connectMultiWiFi in loop");
+    Serial.println(F("\nWiFi lost. Call connectMultiWiFi in loop"));
     connectMultiWiFi();
   }
 }
@@ -481,7 +591,12 @@ void check_status()
   static ulong current_millis;
 
 #define WIFICHECK_INTERVAL    1000L
-#define HEARTBEAT_INTERVAL    10000L
+
+#if USE_ESP_WIFIMANAGER_NTP
+  #define HEARTBEAT_INTERVAL    60000L
+#else
+  #define HEARTBEAT_INTERVAL    10000L
+#endif
 
   current_millis = millis();
 
@@ -500,17 +615,29 @@ void check_status()
   }
 }
 
-void loadConfigData()
+int calcChecksum(uint8_t* address, uint16_t sizeToCalc)
+{
+  uint16_t checkSum = 0;
+  
+  for (uint16_t index = 0; index < sizeToCalc; index++)
+  {
+    checkSum += * ( ( (byte*) address ) + index);
+  }
+
+  return checkSum;
+}
+
+bool loadConfigData()
 {
   File file = FileFS.open(CONFIG_FILENAME, "r");
   LOGERROR(F("LoadWiFiCfgFile "));
 
-  memset(&WM_config,       0, sizeof(WM_config));
+  memset((void*) &WM_config,       0, sizeof(WM_config));
 
   // New in v1.4.0
-  memset(&WM_STA_IPconfig, 0, sizeof(WM_STA_IPconfig));
+  memset((void*) &WM_STA_IPconfig, 0, sizeof(WM_STA_IPconfig));
   //////
-    
+
   if (file)
   {
     file.readBytes((char *) &WM_config,   sizeof(WM_config));
@@ -518,20 +645,31 @@ void loadConfigData()
     // New in v1.4.0
     file.readBytes((char *) &WM_STA_IPconfig, sizeof(WM_STA_IPconfig));
     //////
-    
+
     file.close();
     LOGERROR(F("OK"));
 
+    if ( WM_config.checksum != calcChecksum( (uint8_t*) &WM_config, sizeof(WM_config) - sizeof(WM_config.checksum) ) )
+    {
+      LOGERROR(F("WM_config checksum wrong"));
+      
+      return false;
+    }
+    
     // New in v1.4.0
     displayIPConfigStruct(WM_STA_IPconfig);
     //////
+
+    return true;
   }
   else
   {
     LOGERROR(F("failed"));
+
+    return false;
   }
 }
-    
+
 void saveConfigData()
 {
   File file = FileFS.open(CONFIG_FILENAME, "w");
@@ -539,12 +677,16 @@ void saveConfigData()
 
   if (file)
   {
-    file.write((uint8_t*) &WM_config,   sizeof(WM_config));
+    WM_config.checksum = calcChecksum( (uint8_t*) &WM_config, sizeof(WM_config) - sizeof(WM_config.checksum) );
+    
+    file.write((uint8_t*) &WM_config, sizeof(WM_config));
+
+    displayIPConfigStruct(WM_STA_IPconfig);
 
     // New in v1.4.0
     file.write((uint8_t*) &WM_STA_IPconfig, sizeof(WM_STA_IPconfig));
     //////
-    
+
     file.close();
     LOGERROR(F("OK"));
   }
@@ -563,10 +705,20 @@ void setup()
   Serial.begin(115200);
   while (!Serial);
 
-  Serial.print("\nStarting ConfigOnDoubleReset with DoubleResetDetect using " + String(FS_Name));
-  Serial.println(" on " + String(ARDUINO_BOARD));
-  Serial.println("ESP_WiFiManager Version " + String(ESP_WIFIMANAGER_VERSION));
+  delay(200);
+
+  Serial.print(F("\nStarting ConfigOnDoubleReset with DoubleResetDetect using ")); Serial.print(FS_Name);
+  Serial.print(F(" on ")); Serial.println(ARDUINO_BOARD);
+  Serial.println(ESP_WIFIMANAGER_VERSION);
   Serial.println(ESP_DOUBLE_RESET_DETECTOR_VERSION);
+
+#if defined(ESP_WIFIMANAGER_VERSION_MIN)
+  if (ESP_WIFIMANAGER_VERSION_INT < ESP_WIFIMANAGER_VERSION_MIN)
+  {
+    Serial.print("Warning. Must use this example on Version equal or later than : ");
+    Serial.println(ESP_WIFIMANAGER_VERSION_MIN_TARGET);
+  }
+#endif
 
   Serial.setDebugOutput(false);
 
@@ -580,12 +732,28 @@ void setup()
   if (!FileFS.begin())
 #endif
   {
-    Serial.print(FS_Name);
-    Serial.println(F(" failed! AutoFormatting."));
-
 #ifdef ESP8266
     FileFS.format();
 #endif
+
+    Serial.println(F("SPIFFS/LittleFS failed! Already tried formatting."));
+  
+    if (!FileFS.begin())
+    {     
+      // prevents debug info from the library to hide err message.
+      delay(100);
+      
+#if USE_LITTLEFS
+      Serial.println(F("LittleFS failed!. Please use SPIFFS or EEPROM. Stay forever"));
+#else
+      Serial.println(F("SPIFFS failed!. Please use LittleFS or EEPROM. Stay forever"));
+#endif
+
+      while (true)
+      {
+        delay(1);
+      }
+    }
   }
 
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
@@ -603,10 +771,12 @@ void setup()
   // Use this to personalize DHCP hostname (RFC952 conformed)
   ESP_WiFiManager ESP_wifiManager("ConfigOnDoubleReset");
 
+#if USE_CUSTOM_AP_IP
   //set custom ip for portal
   // New in v1.4.0
   ESP_wifiManager.setAPStaticIPConfig(WM_AP_IPconfig);
   //////
+#endif
 
   ESP_wifiManager.setMinimumSignalQuality(-1);
 
@@ -634,10 +804,13 @@ void setup()
   Router_Pass = ESP_wifiManager.WiFi_Pass();
 
   //Remove this line if you do not want to see WiFi password printed
-  Serial.println("Stored: SSID = " + Router_SSID + ", Pass = " + Router_Pass);
+  Serial.println("ESP Self-Stored: SSID = " + Router_SSID + ", Pass = " + Router_Pass);
 
-  // SSID to uppercase
+  // SSID/PWD to uppercase
   ssid.toUpperCase();
+  password = "My" + ssid;
+
+  bool configDataLoaded = false;
 
   // From v1.1.0, Don't permit NULL password
   if ( (Router_SSID != "") && (Router_Pass != "") )
@@ -646,11 +819,38 @@ void setup()
     wifiMulti.addAP(Router_SSID.c_str(), Router_Pass.c_str());
 
     ESP_wifiManager.setConfigPortalTimeout(120); //If no access point name has been previously entered disable timeout.
-    Serial.println("Got stored Credentials. Timeout 120s for Config Portal");
+    Serial.println(F("Got ESP Self-Stored Credentials. Timeout 120s for Config Portal"));
+  }
+  
+  if (loadConfigData())
+  {
+    configDataLoaded = true;
+    
+    ESP_wifiManager.setConfigPortalTimeout(120); //If no access point name has been previously entered disable timeout.
+    Serial.println(F("Got stored Credentials. Timeout 120s for Config Portal")); 
+
+#if USE_ESP_WIFIMANAGER_NTP      
+    if ( strlen(WM_config.TZ_Name) > 0 )
+    {
+      LOGERROR3(F("Current TZ_Name ="), WM_config.TZ_Name, F(", TZ = "), WM_config.TZ);
+
+  #if ESP8266
+      configTime(WM_config.TZ, "pool.ntp.org"); 
+  #else
+      //configTzTime(WM_config.TZ, "pool.ntp.org" );
+      configTzTime(WM_config.TZ, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+  #endif   
+    }
+    else
+    {
+      Serial.println(F("Current Timezone is not set. Enter Config Portal to set."));
+    } 
+#endif
   }
   else
   {
-    Serial.println("Open Config Portal without Timeout: No stored Credentials.");
+    // Enter CP only if no stored SSID on flash and file
+    Serial.println(F("Open Config Portal without Timeout: No stored Credentials."));
     initialConfig = true;
   }
 
@@ -659,13 +859,29 @@ void setup()
     // DRD, disable timeout.
     ESP_wifiManager.setConfigPortalTimeout(0);
 
-    Serial.println("Open Config Portal without Timeout: Double Reset Detected");
+    Serial.println(F("Open Config Portal without Timeout: Double Reset Detected"));
     initialConfig = true;
   }
 
   if (initialConfig)
   {
-    Serial.println("Starting configuration portal.");
+    Serial.print(F("Starting configuration portal @ "));
+    
+#if USE_CUSTOM_AP_IP    
+    Serial.print(APStaticIP);
+#else
+    Serial.print(F("192.168.4.1"));
+#endif
+
+#if defined(HTTP_PORT_TO_USE)
+    Serial.print(F(":")); Serial.print(HTTP_PORT_TO_USE);
+#endif
+    
+    Serial.print(F(", SSID = "));
+    Serial.print(ssid);
+    Serial.print(F(", PWD = "));
+    Serial.println(password);
+
     digitalWrite(PIN_LED, LED_ON); // turn the LED on by making the voltage LOW to tell us we are in configuration mode.
 
     //sets timeout in seconds until configuration portal gets turned off.
@@ -674,11 +890,11 @@ void setup()
     //ESP_wifiManager.setConfigPortalTimeout(600);
 
     // Starts an access point
-    if (!ESP_wifiManager.startConfigPortal((const char *) ssid.c_str(), password))
-      Serial.println("Not connected to WiFi but continuing anyway.");
+    if (!ESP_wifiManager.startConfigPortal((const char *) ssid.c_str(), (const char *) password.c_str()))
+      Serial.println(F("Not connected to WiFi but continuing anyway."));
     else
     {
-      Serial.println("WiFi connected...yeey :)");
+      Serial.println(F("WiFi connected...yeey :)"));
     }
 
     // Stored  for later usage, from v1.1.0, but clear first
@@ -707,9 +923,40 @@ void setup()
       }
     }
 
+#if USE_ESP_WIFIMANAGER_NTP      
+    String tempTZ   = ESP_wifiManager.getTimezoneName();
+
+    if (strlen(tempTZ.c_str()) < sizeof(WM_config.TZ_Name) - 1)
+      strcpy(WM_config.TZ_Name, tempTZ.c_str());
+    else
+      strncpy(WM_config.TZ_Name, tempTZ.c_str(), sizeof(WM_config.TZ_Name) - 1);
+
+    const char * TZ_Result = ESP_wifiManager.getTZ(WM_config.TZ_Name);
+    
+    if (strlen(TZ_Result) < sizeof(WM_config.TZ) - 1)
+      strcpy(WM_config.TZ, TZ_Result);
+    else
+      strncpy(WM_config.TZ, TZ_Result, sizeof(WM_config.TZ_Name) - 1);
+         
+    if ( strlen(WM_config.TZ_Name) > 0 )
+    {
+      LOGERROR3(F("Saving current TZ_Name ="), WM_config.TZ_Name, F(", TZ = "), WM_config.TZ);
+
+  #if ESP8266
+      configTime(WM_config.TZ, "pool.ntp.org"); 
+  #else
+      //configTzTime(WM_config.TZ, "pool.ntp.org" );
+      configTzTime(WM_config.TZ, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org");
+  #endif
+    }
+    else
+    {
+      LOGERROR(F("Current Timezone Name is not set. Enter Config Portal to set."));
+    }
+#endif
+
     // New in v1.4.0
     ESP_wifiManager.getSTAStaticIPConfig(WM_STA_IPconfig);
-    displayIPConfigStruct(WM_STA_IPconfig);
     //////
     
     saveConfigData();
@@ -722,7 +969,8 @@ void setup()
   if (!initialConfig)
   {
     // Load stored data, the addAP ready for MultiWiFi reconnection
-    loadConfigData();
+    if (!configDataLoaded)
+      loadConfigData();
 
     for (uint8_t i = 0; i < NUM_WIFI_CREDENTIALS; i++)
     {
@@ -734,21 +982,21 @@ void setup()
       }
     }
 
-    if ( WiFi.status() != WL_CONNECTED )
+    if ( WiFi.status() != WL_CONNECTED ) 
     {
-      Serial.println("ConnectMultiWiFi in setup");
-
+      Serial.println(F("ConnectMultiWiFi in setup"));
+     
       connectMultiWiFi();
     }
   }
 
-  Serial.print("After waiting ");
-  Serial.print((float) (millis() - startedAt) / 1000L);
-  Serial.print(" secs more in setup(), connection result is ");
+  Serial.print(F("After waiting "));
+  Serial.print((float) (millis() - startedAt) / 1000);
+  Serial.print(F(" secs more in setup(), connection result is "));
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    Serial.print("connected. Local IP: ");
+    Serial.print(F("connected. Local IP: "));
     Serial.println(WiFi.localIP());
   }
   else
@@ -765,5 +1013,4 @@ void loop()
 
   // put your main code here, to run repeatedly
   check_status();
-
 }

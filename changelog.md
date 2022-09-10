@@ -12,6 +12,7 @@
 ## Table of Contents
 
 * [Changelog](#changelog)
+  * [Releases v1.3.2](#releases-v132)
   * [Releases v1.3.1](#releases-v131)
   * [Releases v1.3.0](#releases-v130)
   * [Releases v1.2.1](#releases-v121)
@@ -27,6 +28,11 @@
 ---
 
 ## Changelog
+
+### Releases v1.3.2
+
+1. Fix ESP32 chipID for example`ConfigOnDoubleReset`
+2. Remove dependency on `LittleFS_esp32` library to prevent PIO error when using new ESP32 core v1.0.6+
 
 ### Releases v1.3.1
 
