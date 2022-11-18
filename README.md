@@ -159,7 +159,7 @@ How to use
 #include <ESP_DoubleResetDetector.h>      //https://github.com/khoih-prog/ESP_DoubleResetDetector
 
 // Number of seconds after reset during which a 
-// subseqent reset will be considered a double reset.
+// subsequent reset will be considered a double reset.
 #define DRD_TIMEOUT 10
 
 // RTC Memory Address for the DoubleResetDetector to use
@@ -539,7 +539,7 @@ Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog
 2. Similar features for Arduino (UNO, Mega, SAM DUE, SAMD21/SAMD51, nRF52, STM32, Teensy, etc.). Look at [**DoubleResetDetector_Generic**](https://github.com/khoih-prog/DoubleResetDetector_Generic)
 3. Add support to `ESP32_C3`, `ESP32_S2`
 4. Add support to `ESP32_S3` using ESP32 core v2.0.2+
-5. Add waitingForDRD() function to signal in DRD wating period
+5. Add waitingForDRD() function to signal in DRD waiting period
 6. Fix ESP32 chipID for example`ConfigOnDoubleReset`
 7. Remove dependency on `LittleFS_esp32` library to prevent PIO error when using new ESP32 core v1.0.6+
 
@@ -549,8 +549,8 @@ Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog
 
 ### Contributions and thanks
 
-1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Isssue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
-1. Thanks to [Tochi Moreno](https://github.com/tochimoreno) for enhancement request in [DRD is waiting for a double reset? #14](https://github.com/khoih-prog/ESP_DoubleResetDetector/discussions/14) leading to v1.3.1 to add `waitingForDRD()` function to signal in DRD wating period
+1. Thanks to [zobix](https://github.com/zobix) for report the bug in [Issue 2](https://github.com/khoih-prog/ESP_DoubleResetDetector/issues/2)
+1. Thanks to [Tochi Moreno](https://github.com/tochimoreno) for enhancement request in [DRD is waiting for a double reset? #14](https://github.com/khoih-prog/ESP_DoubleResetDetector/discussions/14) leading to v1.3.1 to add `waitingForDRD()` function to signal in DRD waiting period
 
 
 <table>
