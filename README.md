@@ -275,7 +275,7 @@ and there are many more.
 
 ### Example [checkWaitingDRD](examples/checkWaitingDRD)
 
-https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/28a1b81298cd5b9c2ffabe35e60cffa1874ec837/examples/checkWaitingDRD/checkWaitingDRD.ino#L20-L132
+https://github.com/khoih-prog/ESP_DoubleResetDetector/blob/d990bbb07ea7b5ad3e822ebd0ac29a2d0ebec88b/examples/checkWaitingDRD/checkWaitingDRD.ino#L14-L134
 
 
 
