@@ -1,4 +1,4 @@
-## ESP_DoubleResetDetector
+## ESP_DoubleResetDetector Library
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/ESP_DoubleResetDetector.svg)](https://github.com/khoih-prog/ESP_DoubleResetDetector/releases)
@@ -6,8 +6,11 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/ESP_DoubleResetDetector.svg)](http://github.com/khoih-prog/ESP_DoubleResetDetector/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-ESP_DoubleResetDetector/count.svg" title="ESP_DoubleResetDetector Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-ESP_DoubleResetDetector/count.svg" style="height: 30px;width: 200px;"></a>
 
 ---
 ---
@@ -81,16 +84,16 @@
 
 #### Features
 
-[**ESP_DoubleResetDetector**](https://github.com/khoih-prog/ESP_DoubleResetDetector) is a library for the **ESP8266 and ESP32** boards to detects a double reset, within configurable timeout (default 10s) seconds, so that an alternative start-up mode can be used. Example use cases are to allow re-configuration of a device's WiFi / MQTT / Blynk credentials.
+[**ESP_DoubleResetDetector**](https://github.com/khoih-prog/ESP_DoubleResetDetector) is a library for the **ESP8266 and ESP32** boards to detects a `double reset`, within configurable timeout (default 10s) seconds, so that an alternative start-up mode can be used. Example use cases are to allow re-configuration of a device's WiFi / MQTT / Blynk credentials.
 
-This library is based on, modified, bug-fixed and improved from [`Stephen Denne's DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) to add support to ESP8266 and ESP32 using EEPROM, SPIFFS and LittleFS besides original RTC.
+This library is based on, modified, bug-fixed and improved from [`Stephen Denne's DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) to add support to ESP8266 and ESP32 using `EEPROM`, `SPIFFS` or `LittleFS` besides original `RTC`.
 
 Currently, [`DoubleResetDetector`](https://github.com/datacute/DoubleResetDetector) only supports ESP8266 using RTC memory.
  
-This library can be used to detect a double reset within a predetermined time to force the program to enter a special operation such as Config Portal, Clear Default Data, etc., using :
+This library can be used to detect a `double reset within a predetermined time` to force the program to enter a special operation such as Config Portal, Clear Default Data, etc., using :
 
-1. EEPROM, SPIFFS or LittleFS for ESP8266 and ESP32 boards.
-2. RTC memory for ESP8266 boards (unadvised).
+1. `EEPROM`, `SPIFFS` or `LittleFS` for ESP8266 and ESP32 boards.
+2. `RTC` memory for ESP8266 boards (unadvised).
 
 #### Currently supported Boards
 
@@ -105,7 +108,7 @@ This [**ESP_DoubleResetDetector** library](https://github.com/khoih-prog/ESP_Dou
 ## Prerequisites
 
 1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
-2. [`ESP32 Core 2.0.4+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+2. [`ESP32 Core 2.0.5+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
 3. [`ESP8266 Core 3.0.2+`](https://github.com/esp8266/Arduino) for ESP8266-based boards. [![Latest release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/). SPIFFS is deprecated from ESP8266 core 2.7.1+, to use LittleFS. 
 4. [`LittleFS_esp32 v1.0.6+`](https://github.com/lorol/LITTLEFS) for ESP32-based boards using LittleFS with ESP32 core **v1.0.5-**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/LittleFS_esp32.svg?)](https://www.ardu-badge.com/LittleFS_esp32). **Notice**: This [`LittleFS_esp32 library`](https://github.com/lorol/LITTLEFS) has been integrated to Arduino [ESP32 core v1.0.6+](https://github.com/espressif/arduino-esp32/tree/master/libraries/LITTLEFS) and **you don't need to install it if using ESP32 core v1.0.6+**
 
@@ -287,7 +290,7 @@ This is terminal debug output when running [ESP32_FSWebServer_DRD](https://githu
 
 ```cpp
 Starting ESP32_FSWebServer_DRD with DoubleResetDetect using SPIFFS on ESP32_DEV
-ESP_WiFiManager v1.11.0
+ESP_WiFiManager v1.12.1
 ESP_DoubleResetDetector v1.3.2
 FS File: /ConfigSW.json, size: 150B
 FS File: /CanadaFlag_1.png, size: 40.25KB
@@ -351,9 +354,9 @@ HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH HHHHHHHHHH
 This is terminal debug output when running [ConfigOnDoubleReset](https://github.com/khoih-prog/ESP_WiFiManager/tree/master/examples/ConfigOnDoubleReset) on  **ESP32 ESP32_DEV.**. Config Portal was requested by DRD to input and save Credentials.
 
 
-```
+```cpp
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager v1.11.0
+ESP_WiFiManager v1.12.1
 ESP_DoubleResetDetector v1.3.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
@@ -397,7 +400,7 @@ load:0x40080400,len:6352
 entry 0x400806b8
 
 Starting ConfigOnDoubleReset with DoubleResetDetect using LittleFS on ESP32_DEV
-ESP_WiFiManager v1.11.0
+ESP_WiFiManager v1.12.1
 ESP_DoubleResetDetector v1.3.2
 [WM] RFC925 Hostname = ConfigOnDoubleReset
 [WM] Set CORS Header to :  Your Access-Control-Allow-Origin
@@ -428,7 +431,7 @@ Starting configuration portal.
 This is terminal debug output when running [ESPAsync_WiFi](https://github.com/khoih-prog/ESPAsync_WiFiManager_Lite/tree/master/examples/ESPAsync_WiFi) on  **ESP32 ESP32S3_DEV.**. Config Portal was requested by DRD to input and save Credentials.
 
 
-```
+```cpp
 Starting ESPAsync_WiFi using LittleFS on ESP32S3_DEV
 ESPAsync_WiFiManager_Lite v1.9.0
 ESP_DoubleResetDetector v1.3.2
@@ -542,7 +545,7 @@ Submit issues to: [ESP_DoubleResetDetector issues](https://github.com/khoih-prog
 5. Add waitingForDRD() function to signal in DRD waiting period
 6. Fix ESP32 chipID for example`ConfigOnDoubleReset`
 7. Remove dependency on `LittleFS_esp32` library to prevent PIO error when using new ESP32 core v1.0.6+
-
+8. Add astyle using `allman` style. Restyle the library
 
 ---
 ---
@@ -580,6 +583,6 @@ If you want to contribute to this project:
 
 ### Copyright
 
-Copyright 2019- Khoi Hoang
+Copyright (c) 2019- Khoi Hoang
 
 

@@ -30,7 +30,7 @@
 
 #include <ESP_DoubleResetDetector.h>      //https://github.com/khoih-prog/ESP_DoubleResetDetector
 
-// Number of seconds after reset during which a 
+// Number of seconds after reset during which a
 // subseqent reset will be considered a double reset.
 #define DRD_TIMEOUT 10
 
@@ -60,18 +60,18 @@ DoubleResetDetector* drd;
 void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  
+
   Serial.begin(115200);
   Serial.println("\nStarting minimal example for ESP_DoubleResetDetector");
-  
+
   drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
-  if (drd->detectDoubleReset()) 
+  if (drd->detectDoubleReset())
   {
     Serial.println("Double Reset Detected");
     digitalWrite(LED_BUILTIN, LED_ON);
-  } 
-  else 
+  }
+  else
   {
     Serial.println("No Double Reset Detected");
     digitalWrite(LED_BUILTIN, LED_OFF);
